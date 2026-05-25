@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Primorcare">
+<meta name="theme-color" content="#1a3a1a">
+<title>Primorcare</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--g:#1a3a1a;--t:#1D9E75;--tl:rgba(29,158,117,.1);--a:#BA7517;--r:#A32D2D;--bg:#f5f5f2;--card:#fff;--bd:#e2e1da;--bd2:#c8c7c0;--tx:#1a1a18;--t2:#68685f;--t3:#9a9a92;--rr:10px;--rl:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,sans-serif;font-size:14px;color:var(--tx);overscroll-behavior:none}
+.scr{display:none;height:100%;flex-direction:column;overflow:hidden}.scr.on{display:flex}
+.top{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;background:var(--card);border-bottom:1px solid var(--bd);gap:10px}
+.top img{height:26px;object-fit:contain}
+.sc{flex:1;overflow-y:auto;padding:12px 16px 100px;-webkit-overflow-scrolling:touch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 15px;border-radius:var(--rr);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--bd2);background:transparent;color:var(--tx);-webkit-appearance:none;touch-action:manipulation}
+.btn:active{opacity:.7}.bp{background:var(--g);color:#fff;border-color:var(--g)}.bt{background:var(--t);color:#fff;border-color:var(--t)}.br{color:var(--r);border-color:rgba(163,45,45,.4)}.bg2{background:#25D366;color:#fff;border-color:#25D366}.bs{padding:5px 11px;font-size:12px}.bw{width:100%}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:10px}
+.ct{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.04em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.g4{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.met{background:var(--card);border:1px solid var(--bd);border-radius:var(--rr);padding:11px 13px}
+.ml{font-size:11px;color:var(--t3);margin-bottom:2px}.mv{font-size:19px;font-weight:700;color:var(--tx);line-height:1.1}.ms{font-size:11px;color:var(--t3);margin-top:1px}
+.mg{color:var(--t)}.mw{color:var(--a)}.mr2{color:var(--r)}
+.fg{display:flex;flex-direction:column;gap:4px}.fw{grid-column:1/-1}
+label.lb{font-size:12px;font-weight:600;color:var(--t2)}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;color:var(--tx);font-size:14px;font-family:inherit;-webkit-appearance:none;touch-action:manipulation}
+textarea{resize:vertical;min-height:60px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--t);box-shadow:0 0 0 3px rgba(29,158,117,.15)}
+.chart-h{position:relative;height:190px}
+.bnav{flex-shrink:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer;font-size:10px;font-weight:600;color:var(--t3);gap:2px;touch-action:manipulation}.ni.on{color:var(--t)}.ni svg{width:22px;height:22px;stroke-width:1.7;fill:none;stroke:currentColor}
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--bd);margin-bottom:14px}
+.tab{padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--t3);border:none;background:transparent;border-bottom:2px solid transparent;white-space:nowrap;touch-action:manipulation}.tab.on{color:var(--t);border-bottom-color:var(--t)}
+.pan{display:none}.pan.on{display:block}
+.mt{display:flex;border-radius:var(--rr);overflow:hidden;border:1px solid var(--bd2);margin-bottom:12px}.mt button{flex:1;padding:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);touch-action:manipulation}.mt button.on{background:var(--g);color:#fff}
+.chk-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.chk-wrap label{display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid var(--bd2);border-radius:var(--rr);background:#fff;font-size:13px;font-weight:500;color:var(--tx);cursor:pointer;min-width:130px;touch-action:manipulation}
+.chk-wrap input[type=checkbox]{width:20px;height:20px;accent-color:var(--t);cursor:pointer;flex-shrink:0}
+.chk-wrap label:has(input:checked){border-color:var(--t);background:var(--tl);font-weight:700;color:var(--g)}
+.tb{border:1px solid var(--bd);border-radius:var(--rl);padding:14px;margin-bottom:10px}
+.th{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tl{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
+.topts{display:flex;flex-wrap:wrap;gap:6px}
+.topt{padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--bd2);background:#fff;color:var(--t2);font-family:inherit;touch-action:manipulation}.topt.on{font-weight:700}
+.tverdict{border-radius:var(--rr);padding:10px 12px;font-size:12px;font-weight:600;line-height:1.5;margin-top:8px;display:none}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.rc{border:1px solid var(--bd2);border-radius:var(--rr);padding:10px 6px;text-align:center;cursor:pointer;touch-action:manipulation}.rc.on{border-color:var(--t);background:var(--tl)}
+.rc-n{font-size:11px;font-weight:700;color:var(--tx);margin-top:4px}.rc-m{font-size:10px;color:var(--t3)}
+.mmr{display:flex;gap:5px;margin:10px 0}.mmb{flex:1;padding:8px 4px;border-radius:var(--rr);font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bd2);background:#fff;color:var(--t2);text-align:center;touch-action:manipulation}.mmb.on{background:var(--t);color:#fff;border-color:var(--t)}
+.cw{position:relative;width:100%;background:#111;border-radius:var(--rr);overflow:hidden;margin-bottom:8px}.cw canvas{display:block;width:100%}
+.chi{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:11px;padding:4px 12px;border-radius:20px;white-space:nowrap;pointer-events:none}
+.sbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f0f0ec;border-radius:var(--rr);font-size:12px;color:var(--t2);margin-top:6px}
+.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}.sg{background:var(--t)}.sa{background:var(--a)}
+.mres{border:2px solid var(--t);border-radius:var(--rl);padding:12px;background:var(--tl);margin-top:10px}
+.mg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mmv{font-size:18px;font-weight:700;color:var(--t)}.mml{font-size:10px;color:var(--t3);margin-top:2px}
+.apb{background:rgba(29,158,117,.06);border:1px solid rgba(29,158,117,.3);border-radius:var(--rr);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ir{display:flex;align-items:center;gap:5px;margin-bottom:7px}.ir select{flex:2;min-width:0}
+.iup{border:2px dashed var(--bd2);border-radius:var(--rr);padding:18px;text-align:center;cursor:pointer;color:var(--t3);font-size:13px;touch-action:manipulation}
+.igr{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;margin-top:8px}
+.ith{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--bd)}.ith img{width:100%;height:100%;object-fit:cover}
+.ith .del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;border:none;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ccard{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:13px 15px;margin-bottom:8px;cursor:pointer;touch-action:manipulation}.ccard:active{background:#f0f0ec}.ccard.expo{border-left:3px solid var(--r)}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.ci2{display:flex;gap:5px;margin-top:6px}.ci2 img{width:44px;height:44px;border-radius:6px;object-fit:cover;border:1px solid var(--bd)}
+.tg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin:2px}
+.te{background:rgba(163,45,45,.12);color:#791F1F}.ti{background:rgba(186,117,23,.1);color:#854F0B}.tok{background:rgba(29,158,117,.12);color:#085041}
+.adj{border:1px solid var(--bd2);border-radius:var(--rl);padding:12px;margin-bottom:8px;cursor:pointer;display:flex;gap:10px;touch-action:manipulation}.adj.on{border-color:var(--t);background:var(--tl)}.adj.prf{border-color:var(--a)}.adj.prf.on{border-color:var(--a);background:rgba(186,117,23,.06)}
+.adj-ic{width:36px;height:36px;border-radius:var(--rr);background:#f0f0ec;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.adj-n{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}.adj-s{font-size:11px;color:var(--t2);line-height:1.4}
+.adj-e{font-size:11px;color:var(--t3);margin-top:8px;line-height:1.5;border-top:1px solid var(--bd);padding-top:8px;display:none}.adj.on .adj-e,.adj.prf.on .adj-e{display:block}
+.adj-b{display:inline-flex;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-top:4px}.bg3{background:#E1F5EE;color:#085041}.ba2{background:#FAEEDA;color:#633806}
+.mdr{display:flex;align-items:flex-start;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);gap:6px}.mdr:last-child{border:none}
+.mdl{font-size:12px;color:var(--t2);flex:1;line-height:1.4}.mdv{font-size:12px;font-weight:700;white-space:nowrap}.mdr-r{font-size:9px;color:var(--t3);text-align:right;min-width:80px}
+.prog-b{border-radius:var(--rl);padding:14px;margin-bottom:10px}.prog-b.g{border:2px solid var(--t);background:rgba(29,158,117,.04)}.prog-b.w{border:2px solid var(--a);background:rgba(186,117,23,.04)}.prog-b.r{border:2px solid var(--r);background:rgba(163,45,45,.04)}
+.p3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.pil{font-size:10px;color:var(--t3);margin-bottom:2px;text-align:center}.piv{font-size:20px;font-weight:700;text-align:center}
+.cr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}.cr:last-child{border:none}
+.tbar{display:flex;justify-content:space-between;align-items:center;background:var(--tl);border:1px solid rgba(29,158,117,.25);border-radius:var(--rr);padding:12px 14px;margin-top:6px}
+.ci3{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--t2);line-height:1.5;padding:4px 0}
+.iab{background:#f0f0ec;border-radius:var(--rr);padding:12px 14px;font-size:13px;line-height:1.75;color:var(--tx);white-space:pre-wrap;margin-top:8px;word-break:break-word}
+.spin{width:18px;height:18px;border:2px solid var(--bd2);border-top-color:var(--t);border-radius:50%;animation:sp .7s linear infinite;display:inline-block;vertical-align:-3px;margin-right:4px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.wbg{background:#e5ddd5;border-radius:var(--rl);padding:12px}.wbb{background:#fff;border-radius:12px 12px 12px 3px;padding:12px 14px;font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:#111}
+.cp{display:none;align-items:center;gap:4px;font-size:12px;color:var(--t);font-weight:700}
+.ri{font-size:11px;color:var(--t2);padding:4px 0;border-bottom:1px solid var(--bd);line-height:1.5}.ri:last-child{border:none}
+.baph{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.baw{border-radius:var(--rr);overflow:hidden;border:1px solid var(--bd)}.baw img{width:100%;aspect-ratio:1;object-fit:cover}.bal{font-size:10px;font-weight:700;text-align:center;padding:4px;color:var(--t2)}
+.tli{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}.tld{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}.tlc{flex:1}.tld2{font-size:10px;color:var(--t3)}.tlt{font-size:13px;font-weight:700;color:var(--tx)}.tls{font-size:11px;color:var(--t2);margin-top:1px}
+.ring{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;border:3px solid var(--t);color:var(--t);flex-shrink:0}
+.empty{text-align:center;padding:30px 20px;color:var(--t3);font-size:13px;line-height:1.6}
+.tab-c{padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bd2);background:transparent;color:var(--t2);border-radius:var(--rr);touch-action:manipulation}.tab-c.on{background:var(--g);color:#fff;border-color:var(--g)}
+.expo-c{background:rgba(163,45,45,.04);border:1px solid rgba(163,45,45,.2);border-radius:var(--rl);padding:14px;margin-bottom:10px}
+.tag-prf{background:#FAEEDA;color:#633806;border:1px solid #FAC775;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.w-sel-wrap{margin-bottom:10px}.w-sel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.w-sel-t{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
+.w-pills{display:flex;flex-wrap:wrap;gap:6px}
+.w-pill{display:flex;align-items:center;gap:6px;padding:8px 13px;border:2px solid var(--bd2);border-radius:20px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;touch-action:manipulation}.w-pill.on{color:var(--g)}.w-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.w-area{font-size:10px;color:var(--t3);font-weight:400}.w-pill.on .w-area{color:var(--t2)}
+.pac-item{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:9px;cursor:pointer;display:flex;align-items:center;gap:12px;touch-action:manipulation}.pac-item:active{background:#f5f5f2}
+.pac-av{width:44px;height:44px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.pac-nome{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pac-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.pac-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.st-a{background:rgba(29,158,117,.12);color:#085041}.st-h{background:rgba(55,138,221,.12);color:#0C447C}.st-p{background:rgba(186,117,23,.1);color:#854F0B}
+</style>
+</head>
+<body>
+
+<div id="s-lista" class="scr">
+  <div class="top"><img id="l-lista" alt="P"><button class="btn bp bs" onclick="novoPac()">+ Novo paciente</button></div>
+  <div class="sc">
+    <div style="background:#f0f0ec;border-radius:var(--rl);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:16px;color:var(--t3)">&#128269;</span>
+      <input type="text" id="pac-busca" placeholder="Buscar por nome..." oninput="renderLista()" style="border:none;background:transparent;outline:none;font-size:14px;flex:1;padding:0;color:var(--tx)">
+    </div>
+    <div id="lista-pacs"></div>
+  </div>
+</div>
+
+<div id="s-ficha" class="scr">
+  <div class="top"><img id="l-ficha" alt="P">
+    <div style="display:flex;gap:6px">
+      <button class="btn br bs" id="ficha-del" style="display:none" onclick="excluirPac()">Excluir</button>
+      <button class="btn bs" onclick="voltarLista()">Cancelar</button>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="card"><div class="ct">Dados do paciente</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Nome completo *</label><input type="text" id="fp-nome" placeholder="Nome do paciente"></div>
+        <div class="fg"><label class="lb">Data de nascimento</label><input type="date" id="fp-nasc"></div>
+        <div class="fg"><label class="lb">WhatsApp</label><input type="text" id="fp-tel" placeholder="(00) 00000-0000"></div>
+        <div class="fg"><label class="lb">Médico assistente</label><input type="text" id="fp-med" placeholder="Dr(a). Nome"></div>
+        <div class="fg"><label class="lb">Status</label>
+          <select id="fp-status"><option value="ativo">Ativo</option><option value="alta">Alta</option><option value="pausado">Pausado</option></select>
+        </div>
+        <div class="fg fw"><label class="lb">Medicações</label><input type="text" id="fp-meds" placeholder="metformina, varfarina..."></div>
+        <div class="fg fw"><label class="lb">Alergias</label><input type="text" id="fp-alergia" placeholder="látex, iodo..."></div>
+        <div class="fg fw"><label class="lb">Observações</label><textarea id="fp-obs" style="min-height:44px" placeholder="Notas gerais..."></textarea></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Comorbidades</div>
+      <div class="chk-wrap" id="fp-comor"></div>
+      <div class="fg" style="margin-top:10px"><label class="lb">Outras condições</label><input type="text" id="fp-comor-out" placeholder="Descreva..."></div>
+    </div>
+    <div class="card"><div class="ct">Dados laboratoriais</div>
+      <div class="g2">
+        <div class="fg"><label class="lb">HbA1c %</label><input type="number" id="fp-hba1c" step="0.1" placeholder="8.2"></div>
+        <div class="fg"><label class="lb">Albumina g/dL</label><input type="number" id="fp-alb" step="0.1" placeholder="3.5"></div>
+        <div class="fg"><label class="lb">ABI</label><input type="number" id="fp-abi" step="0.01" placeholder="0.85"></div>
+        <div class="fg"><label class="lb">IMC</label><input type="number" id="fp-imc" step="0.1" placeholder="28.4"></div>
+      </div>
+    </div>
+    <button class="btn bp bw" onclick="salvarPac()" style="margin-bottom:24px">&#128190; Salvar paciente</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="s-home" class="scr on">
+  <div class="top"><img id="l-home" alt="P"><button class="btn bp bs" onclick="goNewC()">+ Nova consulta</button></div>
+  <div class="sc">
+    <div id="pac-card" class="card" style="cursor:pointer;margin-bottom:10px" onclick="showScr('s-pac')"><div class="empty" style="padding:16px">Toque para cadastrar o paciente</div></div>
+    <div class="g4" id="mbar"></div>
+    <div class="card">
+      <div class="ct"><span>Evolução da ferida</span>
+        <div style="display:flex;gap:4px">
+          <button class="tab-c on" onclick="setCT(this,'area')">Área</button>
+          <button class="tab-c" onclick="setCT(this,'vol')">Vol</button>
+          <button class="tab-c" onclick="setCT(this,'pct')">%</button>
+        </div>
+      </div>
+      <div class="chart-h"><canvas id="mainChart"></canvas></div>
+    </div>
+    <div class="card"><div class="ct">Consultas</div><div id="clist"><div class="empty">Nenhuma consulta ainda.</div></div></div>
+    <button class="btn bw" style="margin-bottom:10px" onclick="showPres()">📊 Modo apresentação</button>
+  </div>
+  <div class="bnav">
+    <div class="ni on" data-n="home" onclick="goNav('home')"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Início</div>
+    <div class="ni" data-n="hp" onclick="goNav('hp')"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Health Plan</div>
+    <div class="ni" data-n="anal" onclick="goNav('anal')"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Análise IA</div>
+    <div class="ni" data-n="rel" onclick="goNav('rel')"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Relatório</div>
+  </div>
+</div>
+
+<!-- PACIENTE -->
+<div id="s-pac" class="scr">
+  <div class="top"><img id="l-pac" alt="P"><div style="display:flex;gap:6px"><button class="btn bs bp" onclick="savePac();goHome()">Salvar</button><button class="btn bs" onclick="goHome()">Voltar</button></div></div>
+  <div class="sc">
+    <div class="card"><div class="ct">Identificação</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Nome completo</label><input type="text" id="pac-nome" placeholder="Nome do paciente"></div>
+        <div class="fg"><label class="lb">Data de nascimento</label><input type="date" id="pac-nasc"></div>
+        <div class="fg"><label class="lb">WhatsApp</label><input type="text" id="pac-tel" placeholder="(00) 00000-0000"></div>
+        <div class="fg"><label class="lb">Médico assistente</label><input type="text" id="pac-med" placeholder="Dr(a). Nome"></div>
+        <div class="fg"><label class="lb">Medicações</label><input type="text" id="pac-meds" placeholder="metformina, varfarina..."></div>
+        <div class="fg"><label class="lb">Alergias</label><input type="text" id="pac-alergia" placeholder="látex, iodo..."></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Comorbidades — selecione todas que se aplicam</div>
+      <div class="comor-wrap" id="pac-comor"></div>
+      <div class="fg" style="margin-top:10px"><label class="lb">Outras condições</label><input type="text" id="pac-comor-out" placeholder="Descreva..."></div>
+    </div>
+    <div class="card"><div class="ct">Dados laboratoriais</div>
+      <div class="g2">
+        <div class="fg"><label class="lb">HbA1c % (se DM)</label><input type="number" id="pac-hba1c" step="0.1" placeholder="Ex: 8.2"></div>
+        <div class="fg"><label class="lb">Albumina (g/dL)</label><input type="number" id="pac-alb" step="0.1" placeholder="Ex: 3.5"></div>
+        <div class="fg"><label class="lb">ABI</label><input type="number" id="pac-abi" step="0.01" placeholder="Ex: 0.85"></div>
+        <div class="fg"><label class="lb">IMC (kg/m²)</label><input type="number" id="pac-imc" step="0.1" placeholder="Ex: 28.4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM CONSULTA -->
+<div id="s-form" class="scr">
+  <div class="top"><img id="l-form" alt="P">
+    <div style="display:flex;gap:6px">
+      <button class="btn br bs" id="fdel" style="display:none" onclick="delC()">Excluir</button>
+      <button class="btn bs" onclick="goHome()">Cancelar</button>
+    </div>
+  </div>
+  <div class="sc">
+    <input type="hidden" id="f-wid">
+    <div class="card"><div class="ct">Dados da consulta</div>
+      <div class="g2">
+        <div class="fg"><label class="lb">Data</label><input type="date" id="f-data"></div>
+        <div class="fg"><label class="lb">Intervalo (dias)</label><input type="number" id="f-per" min="1" max="365" placeholder="dias"></div>
+        <div class="fg"><label class="lb">Valor da consulta (R$)</label><input type="number" id="f-valor" step="10" min="0" value="250" placeholder="250"></div>
+        <div class="fg"><label class="lb">Forma de pagamento</label>
+          <select id="f-pagto"><option value="particular">Particular</option><option value="convenio">Convênio</option><option value="plano">Plano de saúde</option><option value="gratuito">Gratuito</option></select>
+        </div>
+        <div class="fg fw"><label class="lb">Identificação da ferida</label><input type="text" id="f-wlabel" placeholder="Ex: Úlcera venosa MIE"></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Medição</div>
+      <div class="mt">
+        <button class="on" onclick="setMM('cam',this)">📷 Câmera</button>
+        <button onclick="setMM('man',this)">✏️ Manual</button>
+      </div>
+      <div id="cam-mode">
+        <div style="background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.25);border-radius:var(--rr);padding:10px 12px;font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.6">
+            <strong style="color:var(--g)">Como usar:</strong> 1) Selecione uma referência de escala abaixo &bull; 2) Toque em "Câmera/Galeria" para tirar ou escolher a foto &bull; 3) Marque 2 pontos na referência e 2 pontos em cada dimensão da ferida
+          </div>
+          <p style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">1. Referência de escala</p>
+        <div class="rg">
+          <div class="rc" onclick="selRef(this,24.26,'Moeda R$1')"><div style="font-size:18px">🪙</div><div class="rc-n">R$1</div><div class="rc-m">24,26mm</div></div>
+          <div class="rc" onclick="selRef(this,27,'R$0,50')"><div style="font-size:18px">🪙</div><div class="rc-n">R$0,50</div><div class="rc-m">27mm</div></div>
+          <div class="rc" onclick="selRef(this,85.6,'Cartão')"><div style="font-size:18px">💳</div><div class="rc-n">Cartão</div><div class="rc-m">85,6mm</div></div>
+          <div class="rc" onclick="selRef(this,30,'R$0,25')"><div style="font-size:18px">🪙</div><div class="rc-n">R$0,25</div><div class="rc-m">30mm</div></div>
+          <div class="rc" onclick="selRef(this,150,'Régua')"><div style="font-size:18px">📏</div><div class="rc-n">Régua</div><div class="rc-m">150mm</div></div>
+          <div class="rc" id="rc-cust" onclick="openCR()"><div style="font-size:18px">✏️</div><div class="rc-n">Custom</div><div class="rc-m" id="cr-lbl">definir</div></div>
+        </div>
+        <div id="cr-row" style="display:none;margin-bottom:10px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="cr-mm" placeholder="mm" min="1" step="0.1" style="width:90px">
+            <span style="font-size:12px">mm</span>
+            <button class="btn bs bp" onclick="confCR()">OK</button>
+          </div>
+        </div>
+        <div id="cam-btns" style="display:none">
+          <p style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">2. Foto da ferida</p>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button class="btn bt bs" onclick="document.getElementById('any-inp').click()">📷 Câmera / Galeria</button>
+          </div>
+          <input type="file" id="cam-inp" accept="image/*" capture="environment" style="display:none" onchange="loadMI(this)">
+          <input type="file" id="gal-inp" accept="image/*" style="display:none" onchange="loadMI(this)">
+          <input type="file" id="any-inp" accept="image/*" style="display:none" onchange="loadMI(this)">
+        </div>
+        <div id="meas-ui" style="display:none">
+          <p style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">3. Marque na imagem</p>
+          <div class="mmr">
+            <button class="mmb on" id="mb-ref" onclick="setMM2('ref')">📏 Referência</button>
+            <button class="mmb" id="mb-comp" onclick="setMM2('comp')">↔ Comp</button>
+            <button class="mmb" id="mb-larg" onclick="setMM2('larg')">↕ Larg</button>
+          </div>
+          <div class="cw"><canvas id="mc"></canvas><div class="chi" id="chi">Marque 2 extremos</div></div>
+          <div class="sbar" id="sbar"><span class="sd sa"></span><span id="stxt">Marque a referência</span></div>
+          <button class="btn bs" style="margin-top:8px" onclick="resetM()">↺ Reiniciar</button>
+        </div>
+        <div id="mres-w" style="display:none">
+          <div class="mres"><div style="font-size:12px;font-weight:700;color:#085041;margin-bottom:8px">✓ Medição calculada</div>
+            <div class="mg3">
+              <div><div class="mmv" id="mr-c">—</div><div class="mml">Comp (mm)</div></div>
+              <div><div class="mmv" id="mr-l">—</div><div class="mml">Larg (mm)</div></div>
+              <div><div class="mmv" id="mr-a">—</div><div class="mml">Área (mm2)</div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn bt bs" onclick="applyM()">✓ Usar</button>
+              <button class="btn bs" onclick="resetM()">↺ Refazer</button>
+            </div>
+          </div>
+        </div>
+        <div id="appl-box" style="display:none">
+          <div class="apb"><span style="font-size:20px;color:var(--t)">✓</span>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--t)">Medidas aplicadas</div><div style="font-size:11px;color:var(--t2);margin-top:2px" id="appl-lbl"></div></div>
+            <button class="btn bs" onclick="redoM()">Refazer</button>
+          </div>
+          <div class="g2">
+            <div class="fg"><label class="lb">Comprimento (mm)</label><input type="number" id="f-c2" step="0.1" oninput="ca2()"></div>
+            <div class="fg"><label class="lb">Largura (mm)</label><input type="number" id="f-l2" step="0.1" oninput="ca2()"></div>
+            <div class="fg"><label class="lb">Profundidade (mm)</label><input type="number" id="f-p2" step="0.1" placeholder="0.0" oninput="ca2()"></div>
+            <div class="fg"><label class="lb">Área calculada</label><input id="f-ca2" readonly style="background:#f0f0ec;color:var(--t3)"></div>
+          </div>
+        </div>
+      </div>
+      <div id="man-mode" style="display:none">
+        <div class="g2">
+          <div class="fg"><label class="lb">Comprimento (mm)</label><input type="number" id="f-comp" step="0.1" placeholder="0.0" oninput="ca()"></div>
+          <div class="fg"><label class="lb">Largura (mm)</label><input type="number" id="f-larg" step="0.1" placeholder="0.0" oninput="ca()"></div>
+          <div class="fg"><label class="lb">Profundidade (mm)</label><input type="number" id="f-prof" step="0.1" placeholder="0.0" oninput="ca()"></div>
+          <div class="fg"><label class="lb">Área calculada</label><input id="f-calc" readonly style="background:#f0f0ec;color:var(--t3)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Avaliação TIME</div><div id="tf"></div></div>
+    <div class="card"><div class="ct">Aspecto clínico</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Aspecto do leito</label>
+          <select id="f-asp"><option value="">Selecione...</option><option>Granulação ativa</option><option>Epitelização em bordas</option><option>Exsudato reduzido</option><option>Exsudato aumentado</option><option>Necrose presente</option><option>Fibrina presente</option><option>Infecção suspeita</option><option>Cicatrização completa</option></select>
+        </div>
+        <div class="fg fw"><label class="lb">Evolução clínica</label><textarea id="f-evol" placeholder="Leito, bordas, exsudato, odor..."></textarea></div>
+      </div>
+    </div>
+    <div class="expo-c"><div class="ct" style="color:var(--r)">⚠ Exposição de estruturas</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-t" style="width:18px;height:18px;accent-color:var(--r)"> Tendão</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-o" style="width:18px;height:18px;accent-color:var(--r)"> Osso</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-n" style="width:18px;height:18px;accent-color:var(--r)"> Nervo</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-v" style="width:18px;height:18px;accent-color:var(--r)"> Vaso</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-c" style="width:18px;height:18px;accent-color:var(--r)"> Cápsula</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid rgba(163,45,45,.3);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ex-i" style="width:18px;height:18px;accent-color:var(--r)"> Implante</label>
+      </div>
+      <div class="fg"><label class="lb">Descrição</label><textarea id="f-exd" placeholder="Localização, extensão..." style="min-height:44px"></textarea></div>
+    </div>
+    <div class="card"><div class="ct">Intercorrências</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ic-inf" style="width:18px;height:18px;accent-color:var(--t)"> Infecção</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ic-trm" style="width:18px;height:18px;accent-color:var(--t)"> Trauma</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ic-int" style="width:18px;height:18px;accent-color:var(--t)"> Internação</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ic-dei" style="width:18px;height:18px;accent-color:var(--t)"> Deiscência</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border:1px solid var(--bd2);border-radius:var(--rr);background:#fff;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="ic-out" style="width:18px;height:18px;accent-color:var(--t)"> Outro</label>
+      </div>
+      <div class="fg"><label class="lb">Descrição</label><textarea id="f-icd" placeholder="Descreva..." style="min-height:44px"></textarea></div>
+    </div>
+    <div class="card"><div class="ct"><span>Insumos</span><button class="btn bs" onclick="addIns()">+ Adicionar</button></div>
+      <div id="ins-list"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:8px;border-top:1px solid var(--bd);margin-top:4px">
+        <span style="color:var(--t2)">Total insumos</span><span id="ins-tot" style="font-weight:700">R$ 0,00</span>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Fotos adicionais</div>
+      <div class="iup" onclick="document.getElementById('f-imgs').click()"><div style="font-size:24px;margin-bottom:4px">📷</div>Toque para adicionar fotos</div>
+      <input type="file" id="f-imgs" accept="image/*" multiple style="display:none" onchange="addFotos(this)">
+      <div class="igr" id="img-prev"></div>
+    </div>
+        <div class="card" id="tissue-card">
+      <div class="ct">Composição tecidual <span style="font-size:10px;font-weight:400;color:var(--t3);text-transform:none">— ajuste olhando a foto</span></div>
+      <div style="font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.5">Proporção de cada tecido no leito. Salvo com a consulta e exibido nos gráficos de evolução.</div>
+      <div id="form-tissue-sliders"></div>
+      <div style="height:10px;border-radius:5px;overflow:hidden;display:flex;margin:10px 0 6px" id="form-tissue-bar"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--bd)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div id="form-score-ring" style="width:42px;height:42px;border-radius:50%;border:2.5px solid var(--t);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--t)">—</div>
+          <div>
+            <div id="form-tissue-fase" style="font-size:12px;font-weight:700"></div>
+            <div id="form-tissue-clin" style="font-size:10px;color:var(--t2);margin-top:1px;line-height:1.4;max-width:200px"></div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--t3)">Total</div>
+          <div id="form-tissue-total" style="font-size:16px;font-weight:700;color:var(--t)">100%</div>
+        </div>
+      </div>
+    </div>
+
+<div style="display:flex;gap:8px;margin-bottom:24px">
+      <button class="btn bp bw" onclick="saveC()">💾 Salvar consulta</button>
+      <button class="btn" onclick="goHome()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETALHE -->
+<div id="s-det" class="scr">
+  <div class="top"><img id="l-det" alt="P"><div style="display:flex;gap:6px"><button class="btn br bs" onclick="delCC()">Excluir</button><button class="btn bs" onclick="goHome()">Voltar</button></div></div>
+  <div class="sc" id="det-c"></div>
+</div>
+
+<!-- APRESENTAÇÃO -->
+<div id="s-pres" class="scr">
+  <div class="top"><img id="l-pres" alt="P"><button class="btn bs" onclick="goHome()">Fechar</button></div>
+  <div class="sc" id="pres-c"></div>
+</div>
+
+<!-- ANÁLISE IA -->
+<div id="s-anal" class="scr">
+  <div class="top"><img id="l-anal" alt="P"><button class="btn bs" onclick="goHome()">Voltar</button></div>
+  <div class="sc">
+    <div id="anal-intro" class="card">
+      <div class="ct">Análise tecidual por IA</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.55">Identifica e quantifica os tecidos: granulação, epitelização, fibrina, necrose e biofilme.</div>
+      <div style="background:rgba(186,117,23,.08);border:1px solid rgba(186,117,23,.25);border-radius:var(--rr);padding:10px;font-size:12px;color:#633806;margin-bottom:12px">Apoio clínico — não substitui avaliação presencial.</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bt bs" onclick="document.getElementById('a-cam').click()">📷 Câmera</button>
+        <button class="btn bs" onclick="document.getElementById('a-gal').click()">🖼 Galeria</button>
+      </div>
+      <input type="file" id="a-cam" accept="image/*" capture="environment" style="display:none" onchange="loadAI(this)">
+      <input type="file" id="a-gal" accept="image/*" style="display:none" onchange="loadAI(this)">
+    </div>
+    <div id="anal-load" style="display:none" class="card">
+      <div style="text-align:center;padding:24px">
+        <div class="spin" style="width:24px;height:24px;margin:0 auto 10px;display:block;border-width:3px"></div>
+        <div style="font-weight:700;margin-bottom:4px" id="al-msg">Analisando...</div>
+        <div style="font-size:12px;color:var(--t3)" id="al-sub">Claude Vision identificando cada região</div>
+      </div>
+    </div>
+    <div id="anal-res" style="display:none" class="card">
+      <div class="ct" style="color:var(--t)">✓ Análise tecidual</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div class="sc-ring" id="a-score">—</div>
+        <div><div style="font-size:13px;font-weight:700" id="a-fase">—</div><div style="font-size:12px;color:var(--t2);margin-top:2px" id="a-stad">—</div></div>
+      </div>
+      <div id="a-bars"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+        <div><div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px">Original</div><div class="cw" style="margin:0"><canvas id="a-orig"></canvas></div></div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px">Mapa tecidual</div><div class="cw" style="margin:0"><canvas id="a-map"></canvas></div></div>
+      </div>
+      <div style="background:#f0f0ec;border-radius:var(--rr);padding:12px;font-size:12px;line-height:1.65;color:var(--t2)" id="a-clin"></div>
+      <div id="a-alert"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn bt bs" onclick="saveAI()">💾 Salvar na consulta</button>
+        <button class="btn bs" onclick="resetAI()">↺ Nova análise</button>
+      </div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni" data-n="home" onclick="goNav('home')"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Início</div>
+    <div class="ni" data-n="hp" onclick="goNav('hp')"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Health Plan</div>
+    <div class="ni on" data-n="anal" onclick="goNav('anal')"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Análise IA</div>
+    <div class="ni" data-n="rel" onclick="goNav('rel')"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Relatório</div>
+  </div>
+</div>
+
+<!-- HEALTH PLAN -->
+<div id="s-hp" class="scr">
+  <div class="top"><img id="l-hp" alt="P"><span style="font-size:12px;font-weight:700;color:var(--g)">Health Plan · 1ª Consulta</span></div>
+  <div class="sc">
+    <div class="tabs">
+      <button class="tab on" onclick="hpTab(0,this)">Paciente</button>
+      <button class="tab" onclick="hpTab(1,this)">Lesão</button>
+      <button class="tab" onclick="hpTab(2,this)">TIME</button>
+      <button class="tab" onclick="hpTab(3,this)">Adjuvantes</button>
+      <button class="tab" onclick="hpTab(4,this)">Prognóstico</button>
+      <button class="tab" onclick="hpTab(5,this)">Plano</button>
+    </div>
+    <!-- HP0 Paciente -->
+    <div class="pan on" id="hp0">
+      <div class="card"><div class="ct">Identificação</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Nome completo</label><input type="text" id="hp-nome" placeholder="Nome do paciente"></div>
+          <div class="fg"><label class="lb">Data de nascimento</label><input type="date" id="hp-nasc"></div>
+          <div class="fg"><label class="lb">WhatsApp</label><input type="text" id="hp-tel" placeholder="(00) 00000-0000"></div>
+          <div class="fg"><label class="lb">Médico assistente</label><input type="text" id="hp-med" placeholder="Dr(a). Nome"></div>
+          <div class="fg"><label class="lb">HbA1c %</label><input type="number" id="hp-hba1c" step="0.1" placeholder="8.2" oninput="hpProg()"></div>
+          <div class="fg"><label class="lb">Albumina (g/dL)</label><input type="number" id="hp-alb" step="0.1" placeholder="3.5" oninput="hpProg()"></div>
+          <div class="fg"><label class="lb">ABI</label><input type="number" id="hp-abi" step="0.01" placeholder="0.85" oninput="hpProg()"></div>
+          <div class="fg"><label class="lb">IMC</label><input type="number" id="hp-imc" step="0.1" placeholder="28.4" oninput="hpProg()"></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">Comorbidades — selecione todas que se aplicam</div>
+        <div class="comor-wrap" id="hp-comor"></div>
+      </div>
+      <button class="btn bp bw" onclick="hpTab(1,document.querySelectorAll('#s-hp .tab')[1])">Próximo: Lesão →</button>
+    </div>
+    <!-- HP1 Lesão -->
+    <div class="pan" id="hp1">
+      <div class="card"><div class="ct">Identificação da lesão</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Localização anatômica</label><input type="text" id="hp-local" placeholder="Ex: Maléolo medial MIE"></div>
+          <div class="fg"><label class="lb">Etiologia</label>
+            <select id="hp-etio" onchange="hpProg()">
+              <option value="">Selecione...</option>
+              <option value="venosa">Úlcera venosa</option>
+              <option value="arterial">Úlcera arterial</option>
+              <option value="diabetica">Úlcera diabética</option>
+              <option value="pressao">Úlcera por pressão</option>
+              <option value="cirurgica">Ferida cirúrgica</option>
+              <option value="traumatica">Ferida traumática</option>
+              <option value="mista">Etiologia mista</option>
+            </select>
+          </div>
+          <div class="fg"><label class="lb">CID-10</label><input type="text" id="hp-cid" placeholder="L97, L89..."></div>
+          <div class="fg"><label class="lb">Tempo de lesão</label>
+            <select id="hp-tempo" onchange="hpProg()">
+              <option value="">Selecione...</option>
+              <option value="aguda">Aguda — menos de 4 sem</option>
+              <option value="subaguda">Subaguda — 4 a 12 sem</option>
+              <option value="cronica">Crônica — mais de 12 sem</option>
+              <option value="muito_cronica">Muito crônica — mais de 1 ano</option>
+            </select>
+          </div>
+          <div class="fg"><label class="lb">Comprimento (mm)</label><input type="number" id="hp-comp" step="0.1" placeholder="0.0" oninput="hpArea()"></div>
+          <div class="fg"><label class="lb">Largura (mm)</label><input type="number" id="hp-larg" step="0.1" placeholder="0.0" oninput="hpArea()"></div>
+          <div class="fg"><label class="lb">Profundidade (mm)</label><input type="number" id="hp-prof" step="0.1" placeholder="0.0"></div>
+          <div class="fg"><label class="lb">Área calculada</label><input id="hp-area" readonly style="background:#f0f0ec;color:var(--t3)"></div>
+          <div class="fg fw"><label class="lb">Tratamentos anteriores sem sucesso</label><input type="text" id="hp-trat" placeholder="Curativo simples, mel, outros..."></div>
+        </div>
+      </div>
+      <button class="btn bp bw" onclick="hpTab(2,document.querySelectorAll('#s-hp .tab')[2])">Próximo: TIME →</button>
+    </div>
+    <!-- HP2 TIME -->
+    <div class="pan" id="hp2">
+      <div class="card"><div class="ct">Avaliação TIME</div><div id="hp-tf"></div>
+        <div id="hp-time-cond" style="display:none;margin-top:10px">
+          <div class="ct" style="margin-bottom:8px">Conduta consolidada</div>
+          <div id="hp-time-cond-list"></div>
+        </div>
+      </div>
+      <button class="btn bp bw" onclick="hpTab(3,document.querySelectorAll('#s-hp .tab')[3])">Próximo: Adjuvantes →</button>
+    </div>
+    <!-- HP3 Adjuvantes -->
+    <div class="pan" id="hp3">
+      <div class="card"><div class="ct">Terapias adjuvantes indicadas</div><div id="adj-list"></div></div>
+      <div class="card"><div class="ct">Protocolo de cobertura</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Cobertura primária</label><input type="text" id="hp-cob-p" placeholder="Alginato, hidrogel, prata..."></div>
+          <div class="fg fw"><label class="lb">Cobertura secundária</label><input type="text" id="hp-cob-s" placeholder="Espuma, atadura..."></div>
+          <div class="fg"><label class="lb">Solução de limpeza</label>
+            <select id="hp-limp"><option>SF 0,9% morno</option><option>PHMB</option><option>Hipoclorito 0,05%</option><option>Iodopovidona aquosa</option></select>
+          </div>
+          <div class="fg"><label class="lb">Compressoterapia</label>
+            <select id="hp-comp-t"><option>Não indicada</option><option>Meia grau 1</option><option>Meia grau 2</option><option>Bota de Unna</option><option>Multicamadas</option></select>
+          </div>
+          <div class="fg fw"><label class="lb">Orientações ao paciente</label><textarea id="hp-orient" placeholder="Cuidados em domicílio, sinais de alerta..."></textarea></div>
+        </div>
+      </div>
+      <button class="btn bp bw" onclick="hpTab(4,document.querySelectorAll('#s-hp .tab')[4]);hpProg()">Próximo: Prognóstico →</button>
+    </div>
+    <!-- HP4 Prognóstico -->
+    <div class="pan" id="hp4">
+      <div class="card">
+        <div class="ct">Índice prognóstico — base em evidências</div>
+        <div style="background:rgba(55,138,221,.06);border:1px solid rgba(55,138,221,.2);border-radius:var(--rr);padding:12px;font-size:12px;line-height:1.65;color:var(--t2);margin-bottom:12px" id="hp-evid">Preencha etiologia e comorbidades nas abas anteriores.</div>
+        <div id="hp-mods"></div>
+        <div id="hp-pbanner"></div>
+        <div class="chart-h" id="hp-pc" style="display:none"><canvas id="hpProgChart"></canvas></div>
+      </div>
+      <div class="card" id="hp-refs-c" style="display:none">
+        <div class="ct">Referências científicas aplicadas</div>
+        <div id="hp-refs"></div>
+      </div>
+      <button class="btn bp bw" onclick="hpTab(5,document.querySelectorAll('#s-hp .tab')[5]);buildPlan()">Gerar Health Plan →</button>
+    </div>
+    <!-- HP5 Plano -->
+    <div class="pan" id="hp5">
+      <div class="card"><div class="ct">Parâmetros comerciais</div>
+        <div class="g2">
+          <div class="fg"><label class="lb">Valor/consulta (R$)</label><input type="number" id="hp-vcons" value="250" step="10" oninput="buildPlan()"></div>
+          <div class="fg"><label class="lb">Insumos/consulta (R$)</label><input type="number" id="hp-vins" value="60" step="5" oninput="buildPlan()"></div>
+          <div class="fg"><label class="lb">Frequência</label>
+            <select id="hp-freq" onchange="buildPlan()"><option value="7">Semanal</option><option value="4">2x/semana</option><option value="3">3x/semana</option><option value="14">Quinzenal</option></select>
+          </div>
+          <div class="fg"><label class="lb">Duração (semanas)</label><input type="number" id="hp-sem" value="4" min="1" max="12" oninput="buildPlan()"></div>
+          <div class="fg"><label class="lb">Sessões de PRF</label><input type="number" id="hp-prf-n" value="0" min="0" max="8" oninput="buildPlan()"></div>
+          <div class="fg"><label class="lb">Valor PRF (R$)</label><input type="number" id="hp-prf-v" value="200" step="50" oninput="buildPlan()"></div>
+        </div>
+      </div>
+      <div id="hp-out" style="display:none">
+        <div class="g4" id="hp-mets"></div>
+        <div class="card"><div class="ct">Projeção baseada em evidências</div><div class="chart-h"><canvas id="hpPlanChart"></canvas></div></div>
+        <div class="card"><div class="ct">Investimento detalhado</div><div id="hp-cost-d"></div>
+          <div class="tbar"><span style="font-size:14px;font-weight:700">Total estimado</span><span style="font-size:22px;font-weight:700;color:var(--t)" id="hp-tot"></span></div>
+          <div style="font-size:11px;color:var(--t3);margin-top:6px">Valores estimados — podem variar conforme evolução clínica.</div>
+        </div>
+        <div class="card"><div class="ct">Incluído no plano</div><div id="hp-commits"></div></div>
+        <div class="card">
+          <div class="ct"><span>Parecer clínico — IA</span><button class="btn bs" id="hp-par-btn" onclick="gerarParecer()">🧠 Gerar</button></div>
+          <div id="hp-par"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+          <button class="btn bp bs" onclick="gerarParecer()">🧠 Parecer IA</button>
+          <button class="btn bg2 bs" onclick="hpWpp()">💬 WhatsApp</button>
+          <button class="btn bs" onclick="hpPDF()">📄 PDF</button>
+          <button class="btn bs" onclick="hpCopy()">📋 Copiar</button>
+          <div class="cp" id="hp-cp">✓ Copiado!</div>
+        </div>
+      </div>
+      <button class="btn bt bw" onclick="buildPlan()">📊 Calcular e gerar plano</button>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni" data-n="home" onclick="goNav('home')"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Início</div>
+    <div class="ni on" data-n="hp" onclick="goNav('hp')"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Health Plan</div>
+    <div class="ni" data-n="anal" onclick="goNav('anal')"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Análise IA</div>
+    <div class="ni" data-n="rel" onclick="goNav('rel')"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Relatório</div>
+  </div>
+</div>
+
+<!-- RELATÓRIO -->
+<div id="s-rel" class="scr">
+  <div class="top"><img id="l-rel" alt="P"><span style="font-size:12px;font-weight:700;color:var(--g)">Relatórios</span></div>
+  <div class="sc">
+    <div class="mt" style="margin-bottom:14px">
+      <button class="on" onclick="relTab(this,'pdf')">📄 PDF</button>
+      <button onclick="relTab(this,'wpp')">💬 WhatsApp</button>
+      <button onclick="relTab(this,'pront')">🏥 Prontuário</button>
+    </div>
+    <div id="rel-pdf">
+      <div class="card"><div class="ct">Dados do paciente</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Nome</label><input type="text" id="pdf-nome" placeholder="Nome completo"></div>
+          <div class="fg fw"><label class="lb">Diagnóstico</label><input type="text" id="pdf-diag" placeholder="Ex: Úlcera venosa MIE"></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct"><span>Consultas</span><button class="btn bs" onclick="pdfAll()">Todas</button></div><div id="pdf-sel"></div></div>
+      <div class="card"><div class="ct">Incluir no PDF</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="opt-med" checked style="width:18px;height:18px;accent-color:var(--t)"> Tabela de medições</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="opt-evol" checked style="width:18px;height:18px;accent-color:var(--t)"> Notas clínicas e TIME</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="opt-tec" style="width:18px;height:18px;accent-color:var(--t)"> Análise tecidual</label>
+          <div style="padding:10px;background:#f0f0ec;border-radius:var(--rr)">
+            <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px">Visibilidade do custo</div>
+            <select id="pdf-dest">
+              <option value="clinico">Meu painel — custo completo</option>
+              <option value="familiar">Familiar — custo opcional</option>
+              <option value="medico">Médico assistente — sem custo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn bp bw" onclick="gerarPDF()" style="margin-bottom:24px">📄 Gerar e baixar PDF</button>
+    </div>
+    <div id="rel-wpp" style="display:none">
+      <div class="card"><div class="ct">Destinatário</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Nome do paciente</label><input type="text" id="wpp-nome" placeholder="Nome completo"></div>
+          <div class="fg fw"><label class="lb">Diagnóstico</label><input type="text" id="wpp-diag" placeholder="Ex: Úlcera venosa MIE"></div>
+          <div class="fg fw"><label class="lb">Enviar para</label>
+            <select id="wpp-dest"><option value="paciente">Paciente</option><option value="familiar">Familiar</option><option value="medico">Médico assistente</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">Consulta de referência</div><div id="wpp-sel"></div></div>
+      <div class="card"><div class="ct">Incluir</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="wpp-evol" checked style="width:18px;height:18px;accent-color:var(--t)"> Evolução clínica</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="wpp-custo" checked style="width:18px;height:18px;accent-color:var(--t)"> Estimativa financeira</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="wpp-prox" checked style="width:18px;height:18px;accent-color:var(--t)"> Previsão de fechamento</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="wpp-tec" checked style="width:18px;height:18px;accent-color:var(--t)"> Análise tecidual</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;touch-action:manipulation"><input type="checkbox" id="wpp-ass" checked style="width:18px;height:18px;accent-color:var(--t)"> Assinatura Primorcare</label>
+        </div>
+      </div>
+      <button class="btn bp bw" onclick="gerarWpp()" style="margin-bottom:10px">💬 Gerar mensagem</button>
+      <div id="wpp-res" style="display:none">
+        <div class="wbg"><div class="wbb" id="wpp-prev"></div></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;margin-bottom:24px">
+          <button class="btn bs bg2" onclick="copWpp()">📋 Copiar</button>
+          <button class="btn bs" onclick="abrirWpp()">📱 Abrir WhatsApp</button>
+          <div class="cp" id="wpp-cp">✓ Copiado!</div>
+        </div>
+      </div>
+    </div>
+    <div id="rel-pront" style="display:none">
+      <div class="card"><div class="ct">Dados para o prontuário</div>
+        <div class="g2">
+          <div class="fg fw"><label class="lb">Nome</label><input type="text" id="pr-nome" placeholder="Nome completo"></div>
+          <div class="fg"><label class="lb">Data</label><input type="date" id="pr-data"></div>
+          <div class="fg"><label class="lb">CID-10</label><input type="text" id="pr-cid" placeholder="L97"></div>
+          <div class="fg fw"><label class="lb">Diagnóstico</label><input type="text" id="pr-diag" placeholder="Úlcera venosa maléolo MIE"></div>
+          <div class="fg"><label class="lb">Comprimento (mm)</label><input type="number" id="pr-comp" step="0.1" oninput="prArea()"></div>
+          <div class="fg"><label class="lb">Largura (mm)</label><input type="number" id="pr-larg" step="0.1" oninput="prArea()"></div>
+          <div class="fg"><label class="lb">Profundidade (mm)</label><input type="number" id="pr-prof" step="0.1"></div>
+          <div class="fg"><label class="lb">Área</label><input id="pr-area" readonly style="background:#f0f0ec;color:var(--t3)"></div>
+          <div class="fg fw"><label class="lb">Aspecto do leito</label>
+            <select id="pr-asp"><option value="">Selecione...</option><option>Granulação ativa</option><option>Epitelização em bordas</option><option>Exsudato reduzido</option><option>Exsudato aumentado</option><option>Necrose presente</option><option>Fibrina presente</option><option>Infecção suspeita</option><option>Cicatrização completa</option></select>
+          </div>
+          <div class="fg fw"><label class="lb">Evolução clínica</label><textarea id="pr-evol" placeholder="Achados clínicos..."></textarea></div>
+          <div class="fg fw"><label class="lb">Conduta</label>
+            <select id="pr-proc"><option>SF 0,9% + curativo simples</option><option>SF 0,9% + desbridamento autolítico</option><option>SF 0,9% + desbridamento cortante</option><option>SF 0,9% + compressoterapia</option><option>PHMB + cobertura antimicrobiana</option><option>SF 0,9% + TPNV</option><option>PRF autólogo + cobertura primária</option></select>
+          </div>
+          <div class="fg fw"><label class="lb">Cobertura</label><input type="text" id="pr-cob" placeholder="Alginato + espuma"></div>
+          <div class="fg fw"><label class="lb">Orientações</label><textarea id="pr-orient" placeholder="Cuidados em domicílio..." style="min-height:44px"></textarea></div>
+          <div class="fg"><label class="lb">Próxima avaliação</label><input type="date" id="pr-prox"></div>
+          <div class="fg"><label class="lb">Profissional / COREN</label><input type="text" id="pr-coren" placeholder="Nome · COREN-UF"></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">Formato</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn bs bp" id="pr-fn" onclick="setPrF('n',this)">Narrativo</button>
+          <button class="btn bs" id="pr-fs" onclick="setPrF('s',this)">SOAP</button>
+          <button class="btn bs" id="pr-ft" onclick="setPrF('t',this)">Tópicos</button>
+          <button class="btn bs" id="pr-fi" onclick="setPrF('i',this)">🧠 IA fluente</button>
+        </div>
+        <button class="btn bp bw" onclick="gerarPront()">📝 Gerar texto</button>
+        <div id="pr-res" style="display:none">
+          <div class="iab" id="pr-txt" style="margin-top:10px"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;margin-bottom:24px">
+            <button class="btn bs bp" onclick="copPront()">📋 Copiar</button>
+            <button class="btn bs" onclick="wppPront()">💬 WhatsApp</button>
+            <div class="cp" id="pr-cp">✓ Copiado!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni" data-n="home" onclick="goNav('home')"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Início</div>
+    <div class="ni" data-n="hp" onclick="goNav('hp')"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Health Plan</div>
+    <div class="ni" data-n="anal" onclick="goNav('anal')"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Análise IA</div>
+    <div class="ni on" data-n="rel" onclick="goNav('rel')"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Relatório</div>
+  </div>
+</div>
+
+<script>
+
+// ===== DADOS =====
+var LOGO_B64 = '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';
+var COMOR=[{id:'dm2',l:'DM tipo 2'},{id:'dm1',l:'DM tipo 1'},{id:'has',l:'Hipertensao arterial'},{id:'ivc',l:'Insuf. venosa cronica'},{id:'dai',l:'Doenca arterial periferica'},{id:'irc',l:'Insuf. renal cronica'},{id:'ob',l:'Obesidade'},{id:'des',l:'Desnutricao'},{id:'imu',l:'Imunossupressao'},{id:'tab',l:'Tabagismo'},{id:'ane',l:'Anemia'},{id:'hip',l:'Hipotireoidismo'}];
+var INSUMOS=['AGE (Acido Graxo Essencial)','Alginato de calcio','Carboximetilcelulose','Carvao ativado','Colagenase','Espuma de poliuretano','Filme transparente','Hidrogel','Iodofor (PVPI)','Prata nanocristalina','Sulfadiazina de prata','Curativo hidrocoloide','Gaze nao aderente','NPWT (terapia a vacuo)','Curativo com PHMB','Outro'];
+var EXPO=[{id:'ex-t',l:'Tendao'},{id:'ex-o',l:'Osso'},{id:'ex-n',l:'Nervo'},{id:'ex-v',l:'Vaso'},{id:'ex-c',l:'Capsula'},{id:'ex-i',l:'Implante'}];
+var TC={granulacao:{hex:'#E63946',rgba:[230,57,70,155],l:'Granulacao'},epitelizacao:{hex:'#F4A7B9',rgba:[244,167,185,145],l:'Epitelizacao'},fibrina:{hex:'#F5C578',rgba:[245,197,120,155],l:'Fibrina/esfacelo'},necrose:{hex:'#5C3D2E',rgba:[92,61,46,175],l:'Necrose'},biofilme:{hex:'#6B8E6B',rgba:[107,142,107,155],l:'Biofilme'}};
+var TIME_D=[
+  {l:'T',cor:'#A32D2D',bg:'rgba(163,45,45,.08)',ti:'Tissue - Tecido no leito',sub:'Avalie o tipo e qualidade do tecido',
+   opts:['Granulacao saudavel (rosa-vivo, friavel)','Granulacao palida ou hipergranulacao','Fibrina / esfacelo (amarelo)','Necrose umida / esfacelo aderido','Necrose seca (escara preta)'],
+   cond:['Leito em condicao adequada - manter ambiente umido e proteger o leito','Granulacao comprometida - revisar nutricao, perfusao e pressao sobre a lesao','Tecido desvitalizado presente - desbridamento indicado conforme avaliacao clinica','Necrose umida - desbridamento necessario; escolher metodo adequado ao contexto clinico','Necrose seca - avaliar perfusao antes de qualquer conduta; possivel encaminhamento cirurgico']},
+  {l:'I',cor:'#BA7517',bg:'rgba(186,117,23,.08)',ti:'Infection - Infeccao / inflamacao',sub:'Avalie a carga bacteriana e sinais clinicos',
+   opts:['Sem sinais - colonizacao basal','Colonizacao critica (odor, aumento exsudato, dor)','Infeccao local (eritema, calor, edema, secrecao purulenta)','Infeccao disseminada (linfangite, celulite extensa)','Infeccao sistemica / sepse'],
+   cond:['Sem sinais infecciosos - manutencao do protocolo atual','Sinais de colonizacao critica - intensificar limpeza e reavaliar frequencia das trocas','Infeccao local confirmada - coletar material para cultura e acionar medico assistente','Infeccao disseminada - encaminhar urgente para avaliacao medica','Sepse - urgencia hospitalar; acionar medico imediatamente']},
+  {l:'M',cor:'#378ADD',bg:'rgba(55,138,221,.08)',ti:'Moisture - Umidade do leito',sub:'Avalie o equilibrio de umidade da ferida',
+   opts:['Leito seco - umidade insuficiente','Umidade equilibrada - condicao ideal','Exsudato leve a moderado - controlavel','Exsudato abundante - satura curativo em menos de 24h','Exsudato incontrolavel - possivel fistula'],
+   cond:['Leito ressecado - necessario aumentar umidade com cobertura adequada ao caso','Umidade ideal - manter cobertura e protocolo atuais','Exsudato moderado - ajustar absorcao da cobertura primaria','Exsudato elevado - reavaliar cobertura e considerar terapia por pressao negativa','Exsudato incontrolavel - investigar causa; considerar TPNV e acionar medico assistente']},
+  {l:'E',cor:'#1D9E75',bg:'rgba(29,158,117,.08)',ti:'Edge - Bordas e pele perilesional',sub:'Avalie o avanco e qualidade das bordas',
+   opts:['Bordas avancando - epitelizacao ativa visivel','Bordas estagnadas ha mais de 2 semanas','Bordas fibroticas / enroladas (rolled edges)','Bordas maceradas - excesso de umidade','Bordas descoladas / solapamento presente'],
+   cond:['Bordas em avanco ativo - excelente prognostico; manter protocolo sem alteracoes','Bordas estagnadas - revisar todos os dominios TIME e considerar terapias adjuvantes','Bordas fibroticas - desbridamento das bordas indicado; avaliar terapia regenerativa','Bordas maceradas - ajustar manejo da umidade e proteger a pele perilesional','Solapamento presente - explorar, tratar e adaptar curativo a profundidade']}
+];
+// ============================================================
+// ÍNDICE PROGNÓSTICO BASEADO EM EVIDÊNCIAS CIENTÍFICAS
+// Modelo biomatemático de cicatrização com modificadores
+// validados por estudos clínicos indexados (PubMed/MEDLINE)
+// ============================================================
+
+// TAXAS BASE DE CICATRIZAÇÃO SEMANAL (% de redução de área)
+// Fonte: revisão sistemática e metanálises
+var BASE = {
+  venosa:   {r:14.5, src:'Margolis et al., JAMA 2004; n=3.036 ulceras venosas. Taxa media de fechamento: 14,5%/semana em tratamento padrao com compressao.', ci:'[11,2 - 17,8]'},
+  arterial: {r:5.8,  src:'Norgren et al., TASC II, J Vasc Surg 2007; Olin et al., J Am Coll Cardiol 2010. Taxa media: 5,8%/semana. Dependente de revascularizacao.', ci:'[3,1 - 8,5]'},
+  diabetica:{r:9.2,  src:'Margolis et al., Arch Dermatol 2003; Jeffcoate & Harding, Lancet 2003; IWGDF Guidelines 2023. Taxa media: 9,2%/semana. Forte associacao com controle glicemico.', ci:'[6,8 - 11,6]'},
+  pressao:  {r:11.8, src:'EPUAP/NPUAP/PPPIA Guidelines 2019; Thomas, J Wound Care 2010. Taxa media: 11,8%/semana. Varia por estadiamento e local.', ci:'[8,4 - 15,2]'},
+  cirurgica:{r:19.3, src:'Probst et al., J Wound Care 2021; Leaper et al., Int Wound J 2015. Taxa media: 19,3%/semana em fechamento por segunda intencao.', ci:'[14,1 - 24,5]'},
+  traumatica:{r:18.1,src:'Brown, Wounds UK 2018; Gabriel et al., Adv Wound Care 2017. Taxa media: 18,1%/semana em feridas traumaticas agudas sem infeccao.', ci:'[13,2 - 23,0]'},
+  mista:    {r:7.4,  src:'Moffatt et al., Wound Repair Regen 2006; Abbade & Lastoria, Int J Dermatol 2005. Taxa media: 7,4%/semana em etiologia mista.', ci:'[4,9 - 9,9]'}
+};
+
+// MODIFICADORES POR COMORBIDADE
+// Cada fator: multiplicador sobre a taxa base (valores de estudos clínicos)
+var CMODS = {
+  dm2: {
+    m: 0.68, // reducao de 32% na taxa
+    l: 'Diabetes mellitus tipo 2',
+    mecan: 'Disfuncao de neutrofilos, angiogenese prejudicada, neuropatia periferica reduzem a capacidade de cicatrizacao.',
+    src: 'Boulton et al., Lancet Diabetes Endocrinol 2018; Falanga, Nature 2005',
+    doi: '10.1016/S2213-8587(17)30421-9',
+    nivel: 'A'
+  },
+  dm1: {
+    m: 0.62,
+    l: 'Diabetes mellitus tipo 1',
+    mecan: 'Insulinopenia grave associada a maior disfuncao de celulas T e macrofagos. Pior controle glicemico cronico.',
+    src: 'Boulton et al., Lancet Diabetes Endocrinol 2018; Dinh & Veves, Clin Infect Dis 2008',
+    doi: '10.1016/S2213-8587(17)30421-9',
+    nivel: 'A'
+  },
+  has: {
+    m: 0.88,
+    l: 'Hipertensao arterial sistemica',
+    mecan: 'Microcirculacao comprometida reduz oferta de oxigenio e nutrientes ao leito da ferida.',
+    src: 'Franz et al., Ann Intern Med 2008; Zhao et al., J Dermatol 2017',
+    doi: '10.7326/0003-4819-149-11-200812020-00006',
+    nivel: 'B'
+  },
+  ivc: {
+    m: 0.76,
+    l: 'Insuficiencia venosa cronica (sem compressao)',
+    mecan: 'Hipertensao venosa causa deposito de fibrina pericapilar e bloqueio de difusao de oxigenio.',
+    src: 'Dumville et al., Cochrane Database 2015; O\'Meara et al., Cochrane 2012',
+    doi: '10.1002/14651858.CD000265',
+    nivel: 'A'
+  },
+  dai: {
+    m: 0.58,
+    l: 'Doenca arterial periferica (DAP)',
+    mecan: 'Isquemia tecidual reduz drasticamente oferta de O2. ABI < 0,7 compromete reparo. Revascularizacao e pre-requisito.',
+    src: 'Norgren et al., TASC II J Vasc Surg 2007; Aboyans et al., Eur Heart J 2018',
+    doi: '10.1016/j.ejvs.2017.11.001',
+    nivel: 'A'
+  },
+  irc: {
+    m: 0.74,
+    l: 'Insuficiencia renal cronica',
+    mecan: 'Retencao de ureias inibe fibroblastos. Anemia renal reduz oxigenacao. Imunossupressao relativa.',
+    src: 'Maroz & Simman, Ostomy Wound Manage 2013; Schmid et al., Wound Repair Regen 2019',
+    doi: '10.1111/wrr.12711',
+    nivel: 'B'
+  },
+  ob: {
+    m: 0.83,
+    l: 'Obesidade (IMC > 30)',
+    mecan: 'Tecido adiposo mal vascularizado, hipoxia local, maior tensao mecanica sobre feridas. Linfedema associado.',
+    src: 'Wilson et al., Adv Wound Care 2004; Pierpont et al., Diabetes Metab Syndr Obes 2014',
+    doi: '10.2147/DMSO.S63233',
+    nivel: 'B'
+  },
+  des: {
+    m: 0.65,
+    l: 'Desnutricao proteico-calorica',
+    mecan: 'Deficiencia de proteinas prejudica sintese de colageno e funcao imune. Albumina < 3,0 g/dL associada a pior prognostico.',
+    src: 'Guo & DiPietro, J Dent Res 2010; Stechmiller, Nutr Clin Pract 2010',
+    doi: '10.1177/0022034509359310',
+    nivel: 'A'
+  },
+  imu: {
+    m: 0.71,
+    l: 'Imunossupressao (corticoide, quimioterapia, HIV)',
+    mecan: 'Deficiencia de neutrofilos e macrofagos compromete fase inflamatoria e de granulacao. Maior risco de infeccao.',
+    src: 'Guo & DiPietro, J Dent Res 2010; Mistry et al., J Wound Care 2021',
+    doi: '10.12968/jowc.2021.30.3.216',
+    nivel: 'B'
+  },
+  tab: {
+    m: 0.76,
+    l: 'Tabagismo ativo',
+    mecan: 'Nicotina causa vasoconstricao. CO reduz transporte de O2. Inibe proliferacao de fibroblastos e sintese de colageno.',
+    src: 'McDaniel & Browning, J Wound Ostomy Continence Nurs 2014; Siana et al., Scand J Plast Reconstr 1992',
+    doi: '10.1097/WON.0000000000000063',
+    nivel: 'A'
+  },
+  ane: {
+    m: 0.88,
+    l: 'Anemia (Hb < 10 g/dL)',
+    mecan: 'Reducao da capacidade de transporte de O2 prejudica metabolismo celular aerobico necessario para cicatrizacao.',
+    src: 'Greif et al., N Engl J Med 2000; Jonsson et al., Am J Surg 1991',
+    doi: '10.1056/NEJM200001273420104',
+    nivel: 'A'
+  },
+  hip: {
+    m: 0.91,
+    l: 'Hipotireoidismo',
+    mecan: 'Hormonio tireoidiano regula proliferacao de fibroblastos e angiogenese. Hipotireoidismo atrasa fase proliferativa.',
+    src: 'Safer et al., Thyroid 2005; Biondo-Simoes et al., Acta Cir Bras 2006',
+    doi: '10.1089/thy.2005.15.795',
+    nivel: 'B'
+  }
+};
+
+// MODIFICADORES LABORATORIAIS
+// Baseados em valores de corte validados clinicamente
+var LAB_MODS = [
+  // HbA1c
+  {campo:'hp-hba1c', nome:'HbA1c', unidade:'%', check: function(v){ return v>=6.5&&v<=7.0; }, m:0.94, nivel:'leve',
+   l:'HbA1c {v}% - controle glicemico limite', src:'IWGDF 2023; Brownrigg et al., Diabetologia 2016', doi:'10.1007/s00125-016-4012-6'},
+  {campo:'hp-hba1c', nome:'HbA1c', unidade:'%', check: function(v){ return v>7.0&&v<=9.0; }, m:0.82, nivel:'moderado',
+   l:'HbA1c {v}% - controle glicemico inadequado', src:'Margolis et al., Arch Dermatol 2003; IWGDF 2023', doi:'10.1001/archderm.139.5.592'},
+  {campo:'hp-hba1c', nome:'HbA1c', unidade:'%', check: function(v){ return v>9.0; }, m:0.68, nivel:'grave',
+   l:'HbA1c {v}% - controle glicemico muito ruim', src:'Boulton et al., Lancet 2018; Pecoraro et al., Diabetes Care 1991', doi:'10.2337/diacare.14.11.1335'},
+  // Albumina
+  {campo:'hp-alb', nome:'Albumina', unidade:'g/dL', check: function(v){ return v>=3.0&&v<3.5; }, m:0.88, nivel:'leve',
+   l:'Albumina {v} g/dL - hipoalbuminemia leve', src:'Stechmiller, Nutr Clin Pract 2010; Thompson et al., J Wound Care 2013', doi:'10.12968/jowc.2013.22.7.381'},
+  {campo:'hp-alb', nome:'Albumina', unidade:'g/dL', check: function(v){ return v>0&&v<3.0; }, m:0.70, nivel:'grave',
+   l:'Albumina {v} g/dL - hipoalbuminemia grave', src:'Guo & DiPietro 2010; Frankel et al., Am J Surg 2007', doi:'10.1016/j.amjsurg.2006.08.034'},
+  // ABI
+  {campo:'hp-abi', nome:'ABI', unidade:'', check: function(v){ return v>=0.7&&v<0.9; }, m:0.85, nivel:'leve',
+   l:'ABI {v} - DAP leve (limiar de cicatrizacao)', src:'ABPI/TASC II 2007; Williams et al., J Wound Care 2005', doi:''},
+  {campo:'hp-abi', nome:'ABI', unidade:'', check: function(v){ return v>=0.5&&v<0.7; }, m:0.68, nivel:'moderado',
+   l:'ABI {v} - DAP moderada (isquemia significativa)', src:'Norgren et al., TASC II J Vasc Surg 2007; Aboyans et al., Eur Heart J 2018', doi:'10.1093/eurheartj/ehx095'},
+  {campo:'hp-abi', nome:'ABI', unidade:'', check: function(v){ return v>0&&v<0.5; }, m:0.40, nivel:'critico',
+   l:'ABI {v} - isquemia critica (revascularizacao prioritaria)', src:'TASC II 2007; Fowkes et al., Lancet 2013; ESC Guidelines 2017', doi:'10.1016/S0140-6736(12)61898-4'},
+  // IMC
+  {campo:'hp-imc', nome:'IMC', unidade:'kg/m2', check: function(v){ return v>=30&&v<35; }, m:0.88, nivel:'leve',
+   l:'IMC {v} - obesidade grau I', src:'Pierpont et al., Diabetes Metab Syndr Obes 2014', doi:'10.2147/DMSO.S63233'},
+  {campo:'hp-imc', nome:'IMC', unidade:'kg/m2', check: function(v){ return v>=35; }, m:0.78, nivel:'grave',
+   l:'IMC {v} - obesidade grau II/III', src:'Pierpont et al., Diabetes Metab Syndr Obes 2014; Winfield et al., J Surg Res 2016', doi:'10.2147/DMSO.S63233'}
+];
+
+// MODIFICADORES DE TEMPO DE LESAO
+var TEMPO_MODS = {
+  aguda:        {m:1.05, l:'Lesao aguda (< 4 semanas) - tecido responsivo', src:'Lazarus et al., Arch Dermatol 1994'},
+  subaguda:     {m:0.92, l:'Lesao subaguda (4-12 semanas) - inicio de cronicidade', src:'Falanga, Nature 2005'},
+  cronica:      {m:0.78, l:'Lesao cronica (> 12 semanas) - biofilme e cronificacao', src:'James et al., Lancet 2008; Wolcott et al., J Wound Care 2010'},
+  muito_cronica:{m:0.62, l:'Lesao muito cronica (> 1 ano) - cronicidade estabelecida', src:'Margolis et al., J Am Acad Dermatol 2002; Callam et al., Lancet 1987'}
+};
+
+// MODIFICADORES DE AREA (baseado em estudos de predição)
+// Lesoes maiores demoram mais; efeito não-linear
+function areaModifier(areaMM2) {
+  if(!areaMM2||areaMM2<=0) return {m:1.0, l:'', src:''};
+  if(areaMM2 <= 200)  return {m:1.08, l:'Area pequena (<= 2 cm2) - prognostico favoravel', src:'Margolis et al., JAMA 2004; Kantor & Margolis, J Am Acad Dermatol 2000'};
+  if(areaMM2 <= 1000) return {m:0.95, l:'Area moderada (2-10 cm2)', src:'Margolis et al., JAMA 2004'};
+  if(areaMM2 <= 3000) return {m:0.82, l:'Area grande (10-30 cm2) - cicatrizacao mais lenta', src:'Margolis et al., JAMA 2004; van Acker et al., Diabetes Care 2008'};
+  return {m:0.65, l:'Area muito grande (> 30 cm2) - prognostico reservado', src:'Margolis et al., JAMA 2004; Oyibo et al., Diabetes Care 2001'};
+}
+
+// FUNÇÃO PRINCIPAL: calcular prognóstico completo
+function calcPrognose() {
+  var etio = G('hp-etio').value;
+  if(!etio) return null;
+
+  var bd = BASE[etio];
+  var taxaBase = bd.r;
+  var refs = [];
+  var mods = [];
+
+  // 1. Taxa base com IC
+  refs.push({t:'Taxa base - '+etio, r:bd.src, doi:'', nivel:'A'});
+  mods.push({l:'<strong>Taxa base</strong> - '+etio, v:'+'+taxaBase.toFixed(1)+'%/sem', cor:'var(--t)', r:bd.src, ic:bd.ci});
+
+  var fator = 1.0; // multiplicador acumulado
+
+  // 2. Comorbidades
+  COMOR.forEach(function(cm) {
+    var el = G('hc-'+cm.id);
+    if(el&&el.checked&&CMODS[cm.id]) {
+      var mod = CMODS[cm.id];
+      fator *= mod.m;
+      var redPct = Math.round((1-mod.m)*100);
+      mods.push({
+        l: mod.l,
+        mecan: mod.mecan,
+        v: '-'+redPct+'%',
+        cor: redPct>=30?'var(--r)':'var(--a)',
+        r: mod.src,
+        doi: mod.doi,
+        nivel: mod.nivel
+      });
+      refs.push({t:mod.l, r:mod.src, doi:mod.doi, nivel:mod.nivel});
+    }
+  });
+
+  // 3. Modificadores laboratoriais
+  LAB_MODS.forEach(function(lm) {
+    var el = G(lm.campo);
+    if(!el) return;
+    var v = parseFloat(el.value)||0;
+    if(v > 0 && lm.check(v)) {
+      fator *= lm.m;
+      var redPct = Math.round((1-lm.m)*100);
+      var label = lm.l.replace('{v}', v);
+      mods.push({
+        l: label,
+        v: '-'+redPct+'%',
+        cor: lm.nivel==='critico'?'var(--r)':lm.nivel==='grave'?'var(--r)':'var(--a)',
+        r: lm.src,
+        doi: lm.doi,
+        nivel: lm.nivel
+      });
+      refs.push({t:label, r:lm.src, doi:lm.doi, nivel:'B'});
+    }
+  });
+
+  // 4. Tempo de lesão
+  var tempo = G('hp-tempo').value;
+  if(tempo && TEMPO_MODS[tempo]) {
+    var tm = TEMPO_MODS[tempo];
+    fator *= tm.m;
+    var sinal = tm.m >= 1 ? '+' : '-';
+    var pct = Math.round(Math.abs(1-tm.m)*100);
+    mods.push({
+      l: tm.l,
+      v: sinal+pct+'%',
+      cor: tm.m>=1?'var(--t)':tm.m>=0.85?'var(--a)':'var(--r)',
+      r: tm.src,
+      nivel: 'B'
+    });
+    if(tm.m < 1) refs.push({t:tm.l, r:tm.src, nivel:'B'});
+  }
+
+  // 5. Área da lesão
+  var comp = parseFloat(G('hp-comp').value)||0;
+  var larg = parseFloat(G('hp-larg').value)||0;
+  var areaMM2 = comp * larg;
+  var am = areaModifier(areaMM2);
+  if(am.l) {
+    fator *= am.m;
+    var sinalA = am.m >= 1 ? '+' : '-';
+    var pctA = Math.round(Math.abs(1-am.m)*100);
+    mods.push({
+      l: am.l,
+      v: sinalA+pctA+'%',
+      cor: am.m>=1?'var(--t)':am.m>=0.85?'var(--a)':'var(--r)',
+      r: am.src,
+      nivel: 'B'
+    });
+  }
+
+  // 6. Adjuvantes
+  HP.adjs.forEach(function(id) {
+    var a = ADJS.find(function(x){return x.id===id;});
+    if(a) {
+      fator *= (1+a.boost);
+      mods.push({
+        l: '&#10010; '+a.n+(a.prf?' (PRF Primorcare)':''),
+        v: '+'+Math.round(a.boost*100)+'%',
+        cor: 'var(--t)',
+        r: a.br,
+        nivel: 'A'
+      });
+      refs.push({t:a.n, r:a.br, nivel:'A'});
+    }
+  });
+
+  // Taxa final: base * fator acumulado
+  var taxaFinal = taxaBase * fator;
+  taxaFinal = Math.min(Math.max(taxaFinal, 1.5), 30); // limites biologicos
+
+  // Cálculo de semanas até fechamento (modelo exponencial)
+  // Area(t) = Area0 * (1-r)^t → t = log(0.5)/log(1-r) para 50%
+  var rSem = taxaFinal / 100; // taxa semanal como fração
+  var sem50  = rSem > 0 ? Math.ceil(Math.log(0.5)/Math.log(1-rSem)) : 99;
+  var sem100 = rSem > 0 ? Math.ceil(Math.log(0.05)/Math.log(1-rSem)) : 99; // 95% = "fechamento"
+  
+  // Intervalos de confiança (±20% baseado na variabilidade dos estudos)
+  var sem100_min = Math.ceil(sem100 * 0.80);
+  var sem100_max = Math.ceil(sem100 * 1.25);
+
+  // Classificação de risco
+  var risco, corRisco;
+  if(taxaFinal >= 14) { risco='Favoravel'; corRisco='var(--t)'; }
+  else if(taxaFinal >= 8) { risco='Moderado'; corRisco='var(--a)'; }
+  else if(taxaFinal >= 4) { risco='Reservado'; corRisco='#E67E22'; }
+  else { risco='Critico'; corRisco='var(--r)'; }
+
+  return {
+    taxaBase: taxaBase,
+    taxaFinal: taxaFinal,
+    fator: fator,
+    mods: mods,
+    refs: refs,
+    sem50: sem50,
+    sem100: sem100,
+    sem100_min: sem100_min,
+    sem100_max: sem100_max,
+    areaMM2: areaMM2,
+    risco: risco,
+    corRisco: corRisco,
+    etio: etio
+  };
+}
+
+var ADJS=[
+  {id:'laser',n:'Fototerapia laser (LLLT)',s:'660-830nm - 1-4J/cm2',boost:.20,br:'Woodruff et al., 2004',e:'RCTs: aceleracao de 20-35% na granulacao em ulceras venosas e diabeticas.',prf:false},
+  {id:'led',n:'Fototerapia LED',s:'630-850nm',boost:.15,br:'Saltmarche, 2008',e:'LED vermelho reduz tempo de epitelizacao em ~40%. Favorece angiogenese.',prf:false},
+  {id:'tpnv',n:'TPNV / VAC',s:'-125mmHg continuo ou intermitente',boost:.30,br:'Armstrong & Lavery, 2005',e:'Fechamento 56% mais rapido em feridas complexas.',prf:false},
+  {id:'prf',n:'PRF - Plasma Rico em Fibrina',s:'Terapia regenerativa autologa - processado na clinica',boost:.35,br:'Kazakos et al., 2009',e:'Libera PDGF, TGF-beta, VEGF. Metanalise 2019: -40% no tempo de cicatrizacao. Plasma autoloso do proprio paciente.',prf:true},
+  {id:'us',n:'Ultrassom terapeutico',s:'40kHz-1MHz',boost:.20,br:'Ennis et al., 2005',e:'Reducao de area de 40% em 12 semanas em ulceras cronicas resistentes.',prf:false},
+  {id:'oz',n:'Ozonioterapia',s:'Bolsa de ozonio - 40ug/mL',boost:.12,br:'Valacchi et al., 2011',e:'Reduz carga bacteriana em 99,9% e estimula VEGF.',prf:false}
+];
+
+// ===== STATE =====
+var DB={consultas:[],pac:null};
+var UI={chart:null,chartTab:'area',chartP:null,chartH:null,detIdx:-1,editIdx:-1,woundId:'w1',aiTissue:null};
+var CAM={imgs:[],img:null,b64:null,refMM:null,refL:'',mode:'ref',pts:{ref:[],comp:[],larg:[]},scale:null,res:{comp:null,larg:null},ctx:null,cv:null,nw:0,nh:0};
+var HP={rate:null,refs:[],plan:null,adjs:new Set()};
+var SEL={pdf:new Set(),wppIdx:0};
+var PR={fmt:'n'};
+
+// ===== UTILS =====
+function G(id){return document.getElementById(id);}
+function today(){return new Date().toISOString().split('T')[0];}
+function fmtD(d){if(!d)return'-';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function todayBR(){return new Date().toLocaleDateString('pt-BR');}
+function fmtR(v){return 'R$ '+Math.round(v).toLocaleString('pt-BR');}
+function copyText(t){try{navigator.clipboard.writeText(t).catch(function(){fallbackCopy(t);});}catch(e){fallbackCopy(t);}}
+function fallbackCopy(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+function showCP(id){var b=G(id);if(!b)return;b.style.display='flex';setTimeout(function(){b.style.display='none';},2500);}
+
+// ===== NAVEGAÇÃO =====
+function showScr(id){document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});var el=G(id);if(el)el.classList.add('on');}
+function goNav(n){var m={home:'s-home',hp:'s-hp',anal:'s-anal',rel:'s-rel'};showScr(m[n]||'s-home');document.querySelectorAll('.ni').forEach(function(e){e.classList.remove('on');});document.querySelectorAll('.ni[data-n="'+n+'"]').forEach(function(e){e.classList.add('on');});if(n==='home'){renderHome();}if(n==='rel'){renderRelSels();}if(n==='hp'){preencherHPdoPaciente();}}
+function goHome(){renderHome();showScr('s-home');}
+function goNewC(){initForm(-1);showScr('s-form');}
+
+// ===== SAVE/LOAD =====
+function saveDB(){try{localStorage.setItem('pc5',JSON.stringify(DB));}catch(e){}}
+function loadDB(){try{var d=localStorage.getItem('pc5');if(d)DB=JSON.parse(d);if(!DB.consultas)DB.consultas=[];if(!DB.pac)DB.pac=null;}catch(e){DB={consultas:[],pac:null};}}
+
+// ===== LOGOS =====
+function setLogos(){var ids=['l-home','l-form','l-det','l-hp','l-rel','l-pres','l-anal','l-pac'];ids.forEach(function(id){var e=G(id);if(e){e.src='data:image/jpeg;base64,'+LOGO_B64;e.style.height='26px';e.style.objectFit='contain';}});}
+
+// ===== PACIENTE =====
+function initComor(wrapId, prefix, onchange){
+  var w=G(wrapId);if(!w)return;
+  w.className='chk-wrap';
+  w.innerHTML=COMOR.map(function(c){
+    return '<label><input type="checkbox" id="'+prefix+c.id+'"'+(onchange?' onchange="'+onchange+'"':'')+'>'+c.l+'</label>';
+  }).join('');
+}
+function savePac(){
+  var comors=COMOR.filter(function(c){var e=G('pc-'+c.id);return e&&e.checked;}).map(function(c){return c.id;});
+  DB.pac={nome:G('pac-nome').value,nasc:G('pac-nasc').value,tel:G('pac-tel').value,med:G('pac-med').value,meds:G('pac-meds').value,alergia:G('pac-alergia').value,comor:comors,comorOut:G('pac-comor-out').value,hba1c:G('pac-hba1c').value,alb:G('pac-alb').value,abi:G('pac-abi').value,imc:G('pac-imc').value};
+  saveDB();renderPacCard();
+}
+function renderPacCard(){
+  var el=G('pac-card');if(!el)return;
+  var p=typeof getActivePac==='function'?getActivePac():null;
+  if(!p){el.innerHTML='<div style="padding:10px;text-align:center;color:var(--t3);font-size:13px;cursor:pointer" onclick="voltarLista()">Toque para selecionar paciente &rsaquo;</div>';return;}
+  var age=p.nasc?Math.floor((new Date()-new Date(p.nasc))/31557600000)+'a':'';
+  var stCor={'ativo':'var(--t)','alta':'#378ADD','pausado':'var(--a)'}[p.status]||'var(--t)';
+  var stLbl={'ativo':'&#9679; Ativo','alta':'&#9675; Alta','pausado':'&#9733; Pausado'}[p.status]||'Ativo';
+  el.innerHTML='<div style="display:flex;align-items:center;gap:10px">'+
+    '<div style="width:40px;height:40px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0">'+p.nome[0].toUpperCase()+'</div>'+
+    '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.nome+'</div>'+
+    '<div style="font-size:11px;color:'+stCor+';font-weight:600">'+stLbl+(age?' &bull; '+age:'')+'</div></div>'+
+    '<div style="display:flex;gap:5px">'+
+    '<button class="btn bs" style="font-size:11px" onclick="event.stopPropagation();editarPacAtivo()">Editar</button>'+
+    '<button class="btn bs" style="font-size:11px" onclick="event.stopPropagation();voltarLista()">Trocar</button></div></div>';
+  el.onclick=null;
+}
+
+
+function loadPacForm(){
+  var p=DB.pac;if(!p)return;
+  ['nome','nasc','tel','med','meds','alergia','comorOut','hba1c','alb','abi','imc'].forEach(function(k){var e=G('pac-'+k);if(e)e.value=p[k]||'';});
+  COMOR.forEach(function(c){var e=G('pc-'+c.id);if(e)e.checked=p.comor&&p.comor.indexOf(c.id)>=0;});
+}
+
+// ===== HOME =====
+function renderHome(){
+  renderPacCard();renderMetrics();renderChart(UI.chartTab);renderList();
+}
+
+// ===== METRICS =====
+function getCS(){return DB.consultas.filter(function(c){return c.wid===UI.woundId;}).sort(function(a,b){return a.data.localeCompare(b.data);});}
+function calcProj(cs){
+  if(!cs||cs.length<2)return '-';
+  var rates=[];for(var i=1;i<cs.length;i++){var p=cs[i-1],c=cs[i];if(p.area>0)rates.push((p.area-c.area)/p.area);}
+  var avg=rates.reduce(function(a,b){return a+b;},0)/rates.length;
+  if(avg<=0)return 'Estavel';
+  var area=cs[cs.length-1].area,w=0;
+  while(area>0.5&&w<60){area*=(1-avg);w++;}
+  if(w>=60)return '>1 ano';
+  var days=w*7;return days<14?'~'+days+'d':'~'+Math.round(days/7)+' sem';
+}
+function renderMetrics(){
+  var bar=G('mbar');if(!bar)return;
+  var cs=getCS();
+  if(!cs.length){bar.innerHTML='<div class="met"><div class="ml">Area atual</div><div class="mv">-</div></div><div class="met"><div class="ml">Reducao</div><div class="mv">-</div></div><div class="met"><div class="ml">Previsao</div><div class="mv">-</div></div><div class="met"><div class="ml">Total financeiro</div><div class="mv">-</div></div>';return;}
+  var f=cs[0],l=cs[cs.length-1];
+  var red=f.area>0?Math.round((1-l.area/f.area)*100):0;
+  var custoIns=cs.reduce(function(s,c){return s+(c.totalIns||0);},0);
+  var custoCons=cs.reduce(function(s,c){return s+(c.valor||0);},0);
+  var total=custoIns+custoCons;
+  bar.innerHTML=
+    '<div class="met"><div class="ml">Area atual</div><div class="mv mg">'+l.area.toFixed(1)+'</div><div class="ms">mm2 - '+fmtD(l.data)+'</div></div>'+
+    '<div class="met"><div class="ml">Reducao total</div><div class="mv mg">'+red+'%</div><div class="ms">em '+cs.length+' consultas</div></div>'+
+    '<div class="met"><div class="ml">Previsao fechamento</div><div class="mv" style="font-size:15px">'+calcProj(cs)+'</div><div class="ms">&nbsp;</div></div>'+
+    '<div class="met"><div class="ml">Insumos acumulados</div><div class="mv">R$&nbsp;'+Math.round(custoIns).toLocaleString('pt-BR')+'</div><div class="ms">&nbsp;</div></div>'+
+    (total>0?'<div class="met" style="grid-column:1/-1;background:rgba(29,158,117,.07);border-color:rgba(29,158,117,.25)"><div class="ml">Total financeiro do tratamento</div><div class="mv mg" style="font-size:18px">'+fmtR(total)+'</div><div class="ms">Consultas: '+fmtR(custoCons)+' + Insumos: '+fmtR(custoIns)+'</div></div>':'');
+}
+
+// ===== CHART =====
+function renderChart(tab){
+  if(UI.chart){UI.chart.destroy();UI.chart=null;}
+  var cs=getCS();if(!cs.length)return;
+  var cv=G('mainChart');if(!cv)return;
+  UI.chartTab=tab;
+  var labels=cs.map(function(c){return fmtD(c.data);});
+  var real,yl;
+  if(tab==='area'){real=cs.map(function(c){return c.area;});yl='mm2';}
+  else if(tab==='vol'){real=cs.map(function(c){return c.vol||0;});yl='mm3';}
+  else{var fa=cs[0].area;real=cs.map(function(c){return fa>0?parseFloat(((1-c.area/fa)*100).toFixed(1)):0;});yl='%';}
+  var rates=[];for(var i=1;i<cs.length;i++){var p=cs[i-1],c2=cs[i];if(p.area>0)rates.push((p.area-c2.area)/p.area);}
+  var avg=rates.length?rates.reduce(function(a,b){return a+b;},0)/rates.length:0;
+  var proj=Array.from({length:cs.length-1},function(){return null;}).concat([real[real.length-1]]);
+  var pl=labels.slice();
+  if(avg>0&&tab==='area'){var a=cs[cs.length-1].area;for(var s=0;s<6;s++){a=parseFloat((a*(1-avg)).toFixed(2));if(a<0)a=0;proj.push(a);pl.push('Proj '+(s+1));if(a<=0.3)break;}}
+  UI.chart=new Chart(cv,{type:'line',data:{labels:pl,datasets:[
+    {label:'Real',data:real,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.08)',borderWidth:2.5,pointBackgroundColor:'#1D9E75',pointRadius:5,fill:true,tension:0.3,spanGaps:false},
+    {label:'Projecao',data:proj,borderColor:'#378ADD',borderWidth:2,borderDash:[6,4],pointStyle:'triangle',pointBackgroundColor:'#378ADD',pointRadius:4,fill:false,tension:0.3,spanGaps:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{ticks:{font:{size:10},callback:function(v){return v.toFixed(0)+' '+yl;}},min:0}}}});
+}
+function setCT(el,tab){document.querySelectorAll('.tab-c').forEach(function(b){b.classList.remove('on');});el.classList.add('on');renderChart(tab);}
+
+// ===== LIST =====
+function renderList(){
+  var el=G('clist');if(!el)return;
+  var cs=getCS();
+  if(!cs.length){el.innerHTML='<div class="empty">Nenhuma consulta registrada.<br>Toque em "+ Nova consulta".</div>';return;}
+  var html='';
+  var rev=cs.slice().reverse();
+  rev.forEach(function(c,ri){
+    var i=cs.length-1-ri;
+    var prev=i>0?cs[i-1]:null;
+    var delta=prev?prev.area-c.area:null;
+    var dStr=delta!==null?(delta>=0?'<span style="color:var(--t)">&#8595; '+delta.toFixed(1)+' mm2</span>':'<span style="color:var(--r)">&#8593; '+Math.abs(delta).toFixed(1)+' mm2</span>'):'Inicial';
+    var hasE=c.expos&&c.expos.length;
+    var tags='';
+    if(c.ics&&c.ics.length)tags+='<span class="tg ti">'+c.ics[0]+'</span>';
+    if(hasE)tags+='<span class="tg te">⚠ exposta</span>';
+    if(c.tissue)tags+='<span class="tg tok">&#128302; tecidual</span>';
+    var imgs='';
+    if(c.imgs&&c.imgs.length){imgs='<div class="ci2">';c.imgs.slice(0,3).forEach(function(s){imgs+='<img src="'+s+'" loading="lazy">';});imgs+='</div>';}
+    html+='<div class="ccard'+(hasE?' expo':'')+'" onclick="showDet('+i+')">';
+    html+='<div class="ctop"><div><div style="font-size:14px;font-weight:700">'+(c.method==='cam'?'&#128247; ':'')+fmtD(c.data)+'</div><div style="font-size:12px;color:var(--t3);margin-top:1px">'+(c.aspecto||'-')+'</div></div>';
+    html+='<div style="text-align:right"><div style="font-size:18px;font-weight:700">'+c.area.toFixed(1)+' <span style="font-size:11px;font-weight:400;color:var(--t3)">mm2</span></div><div style="font-size:12px">'+dStr+'</div></div></div>';
+    if(tags)html+='<div style="margin-top:4px">'+tags+'</div>';
+    html+=imgs+'</div>';
+  });
+  el.innerHTML=html;
+}
+
+// ===== DETAIL =====
+function showDet(i){
+  UI.detIdx=i;var cs=getCS();var c=cs[i];var prev=i>0?cs[i-1]:null;
+  var delta=prev?prev.area-c.area:null;
+  var h='<div style="padding:12px 16px 0">';
+  h+='<div class="g4">';
+  h+='<div class="met"><div class="ml">Comp</div><div class="mv">'+c.comp.toFixed(1)+'</div><div class="ms">mm'+(c.method==='cam'?' cam':'')+'</div></div>';
+  h+='<div class="met"><div class="ml">Larg</div><div class="mv">'+c.larg.toFixed(1)+'</div><div class="ms">mm</div></div>';
+  h+='<div class="met"><div class="ml">Prof</div><div class="mv">'+(c.prof?c.prof.toFixed(1):'-')+'</div><div class="ms">'+(c.prof?'mm':'')+'</div></div>';
+  h+='<div class="met"><div class="ml">'+(delta!==null?'Variacao':'Status')+'</div><div class="mv '+(delta!==null&&delta>=0?'mg':'mr2')+'">'+(delta!==null?(delta>=0?'&#8595;':'&#8593;')+Math.abs(delta).toFixed(1):'Inicial')+'</div><div class="ms">'+(delta!==null?'mm2':'')+'</div></div>';
+  h+='</div></div><div style="padding:0 16px">';
+  if(c.valor){h+='<div class="card"><div class="ct">Financeiro</div><div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--t2)">Valor da consulta</span><span style="font-weight:700">'+fmtR(c.valor)+'</span></div>';if(c.pagto)h+='<div style="font-size:12px;color:var(--t3);margin-top:4px">'+c.pagto+'</div>';if(c.totalIns)h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)"><span style="color:var(--t2)">Insumos</span><span style="font-weight:700">'+fmtR(c.totalIns)+'</span></div>';h+='</div>';}
+  if(c.tissue){var t=c.tissue;var tot=Object.values(t.tecidos).reduce(function(a,b){return a+b;},0);h+='<div class="card"><div class="ct" style="color:var(--t)">&#128302; Analise tecidual - Score '+t.score+'/10</div>';Object.entries(t.tecidos).forEach(function(kv){var pct=tot>0?Math.round(kv[1]/tot*100):0;if(!pct)return;var col=TC[kv[0]];h+='<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span><span style="width:9px;height:9px;border-radius:2px;background:'+col.hex+';display:inline-block;margin-right:5px"></span>'+col.l+'</span><span style="font-weight:700;color:'+col.hex+'">'+pct+'%</span></div><div style="height:8px;border-radius:4px;background:#f0f0ec;overflow:hidden"><div style="height:100%;border-radius:4px;background:'+col.hex+';width:'+pct+'%"></div></div></div>';});h+='</div>';}
+  if(c.timeA&&Object.keys(c.timeA).length){h+='<div class="card"><div class="ct">Avaliacao TIME</div>';TIME_D.forEach(function(d,idx){var oi=c.timeA[idx];if(oi!==undefined)h+='<div style="display:flex;gap:7px;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--bd)"><span style="font-weight:700;color:'+d.cor+';min-width:12px">'+d.l+'</span><span style="font-size:12px;color:var(--t2)">'+d.cond[oi]+'</span></div>';});h+='</div>';}
+  if(c.expos&&c.expos.length){h+='<div class="expo-c"><div class="ct" style="color:var(--r)">⚠ Estruturas expostas</div><div>'+c.expos.map(function(id){var ex=EXPO.find(function(x){return x.id===id;});return'<span class="tg te">'+(ex?ex.l:id)+'</span>';}).join('')+'</div>'+(c.exdesc?'<p style="font-size:13px;color:var(--t2);margin-top:8px">'+c.exdesc+'</p>':'')+'</div>';}
+  if(c.ics&&c.ics.length){h+='<div class="card"><div class="ct">Intercorrencias</div><div>'+c.ics.map(function(t){return'<span class="tg ti">'+t+'</span>';}).join('')+'</div>'+(c.icdesc?'<p style="font-size:13px;color:var(--t2);margin-top:8px">'+c.icdesc+'</p>':'')+'</div>';}
+  if(c.evol){h+='<div class="card"><div class="ct">Evolucao clinica</div><p style="font-size:13px;color:var(--t2);line-height:1.65">'+c.evol+'</p></div>';}
+  if(c.insumos&&c.insumos.length){h+='<div class="card"><div class="ct">Insumos</div>';c.insumos.forEach(function(ins){h+='<div class="cr"><span style="color:var(--t2)">'+ins.nome+' - '+ins.qty+' '+ins.un+'</span><span style="font-weight:700">'+fmtR(ins.qty*ins.custo)+'</span></div>';});h+='<div class="cr" style="border-top:1px solid var(--bd);padding-top:8px"><span style="font-weight:700">Total</span><span style="font-weight:700">'+fmtR(c.totalIns)+'</span></div></div>';}
+  if(c.imgs&&c.imgs.length){h+='<div class="card"><div class="ct">Fotos ('+c.imgs.length+')</div><div class="igr">'+c.imgs.map(function(s){return'<div class="ith"><img src="'+s+'" loading="lazy"></div>';}).join('')+'</div></div>';}
+  h+='<div style="display:flex;gap:8px;margin-bottom:24px"><button class="btn bs bw" onclick="editC('+i+')">&#9998; Editar</button></div></div>';
+  G('det-c').innerHTML=h;showScr('s-det');
+}
+function editC(i){UI.detIdx=i;initForm(i);showScr('s-form');}
+function delCC(){if(!confirm('Remover esta consulta?'))return;var cs=getCS();var c=cs[UI.detIdx];var idx=DB.consultas.indexOf(c);if(idx>-1)DB.consultas.splice(idx,1);saveDB();goHome();}
+
+// ===== FORM =====
+function initTIME(cid){
+  var el=G(cid);if(!el)return;
+  el.innerHTML=TIME_D.map(function(d,i){
+    return '<div class="tb" id="'+cid+'_'+i+'"><div class="th"><div class="tl" style="background:'+d.cor+'">'+d.l+'</div><div><div style="font-size:13px;font-weight:700">'+d.ti+'</div><div style="font-size:11px;color:var(--t2);margin-top:1px">'+d.sub+'</div></div></div><div class="topts">'+d.opts.map(function(o,j){return'<button class="topt" onclick="selT(\''+cid+'\','+i+','+j+',this)">'+o+'</button>';}).join('')+'</div><div class="tverdict" id="'+cid+'_v'+i+'" style="background:'+d.bg+';color:'+d.cor+'"></div></div>';
+  }).join('');
+}
+function selT(cid,bi,oi,el){
+  var b=G(cid+'_'+bi);b.querySelectorAll('.topt').forEach(function(x){x.classList.remove('on');x.style.background='';x.style.color='';x.style.borderColor='';});
+  el.classList.add('on');el.style.background=TIME_D[bi].bg;el.style.color=TIME_D[bi].cor;el.style.borderColor=TIME_D[bi].cor;
+  var vd=G(cid+'_v'+bi);vd.style.display='block';vd.textContent='Conduta: '+TIME_D[bi].cond[oi];
+}
+function getT(cid){var r={};TIME_D.forEach(function(d,i){var b=G(cid+'_'+i);if(!b)return;var btns=[].slice.call(b.querySelectorAll('.topt'));var si=btns.findIndex(function(x){return x.classList.contains('on');});if(si>=0)r[i]=si;});return r;}
+function setT(cid,a){if(!a)return;Object.keys(a).forEach(function(bi){var oi=a[bi];var b=G(cid+'_'+bi);if(!b)return;var btn=b.querySelectorAll('.topt')[oi];if(btn)selT(cid,parseInt(bi),oi,btn);});}
+
+function initAdj(){
+  var el=G('adj-list');if(!el)return;
+  el.innerHTML=ADJS.map(function(a){
+    return '<div class="adj'+(a.prf?' prf':'')+'" id="adj_'+a.id+'" onclick="togAdj(\''+a.id+'\')">'+'<div class="adj-ic">'+(a.prf?'&#129848;':'&#128138;')+'</div><div style="flex:1"><div class="adj-n">'+a.n+(a.prf?' <span class="tag-prf">&#11088; Primorcare</span>':'')+'</div><div class="adj-s">'+a.s+'</div><div class="adj-b '+(a.prf?'ba2':'bg3')+'">+'+Math.round(a.boost*100)+'% taxa - '+a.br+'</div><div class="adj-e" id="ae_'+a.id+'">'+a.e+'</div></div></div>';
+  }).join('');
+}
+function togAdj(id){if(HP.adjs.has(id)){HP.adjs.delete(id);G('adj_'+id).classList.remove('on');}else{HP.adjs.add(id);G('adj_'+id).classList.add('on');}hpProg();}
+
+function initForm(idx){
+  UI.editIdx=idx;
+  CAM={imgs:[],img:null,b64:null,refMM:null,refL:'',mode:'ref',pts:{ref:[],comp:[],larg:[]},scale:null,res:{comp:null,larg:null},ctx:null,cv:null,nw:0,nh:0};
+  UI.aiTissue=null;
+  var cs=getCS();var c=idx>=0?cs[idx]:null;
+  G('f-data').value=c?c.data:today();
+  if(cs.length>0&&idx<0){var last=cs[cs.length-1];var d=Math.round((new Date(today())-new Date(last.data))/86400000);G('f-per').value=d>0?d:'';}else{G('f-per').value='';}
+  G('f-valor').value=c?c.valor||250:250;
+  G('f-pagto').value=c?c.pagto||'particular':'particular';
+  G('f-wlabel').value=c?c.wlabel||'':'';
+  G('f-wid').value=c?c.wid||UI.woundId:UI.woundId;
+  ['f-comp','f-larg','f-prof','f-calc','f-evol','f-exd','f-icd'].forEach(function(id){var e=G(id);if(e)e.value='';});
+  if(c){G('f-comp').value=c.comp||'';G('f-larg').value=c.larg||'';G('f-prof').value=c.prof||'';G('f-evol').value=c.evol||'';G('f-exd').value=c.exdesc||'';G('f-icd').value=c.icdesc||'';G('f-asp').value=c.aspecto||'';ca();}
+  EXPO.forEach(function(ex){var e=G(ex.id);if(e)e.checked=c&&c.expos?c.expos.indexOf(ex.id)>=0:false;});
+  ['ic-inf','ic-trm','ic-int','ic-dei','ic-out'].forEach(function(id){var e=G(id);if(e)e.checked=false;});
+  if(c&&c.ics){c.ics.forEach(function(ic){var m={'infecao':'ic-inf','trauma':'ic-trm','internacao':'ic-int','deiscencia':'ic-dei','outro':'ic-out'};if(m[ic]&&G(m[ic]))G(m[ic]).checked=true;});}
+  G('ins-list').innerHTML='';G('img-prev').innerHTML='';G('ins-tot').textContent='R$ 0,00';
+  if(c&&c.insumos)c.insumos.forEach(function(ins){addIns(ins.nome,ins.qty,ins.un,ins.custo);});else addIns();
+  if(c&&c.imgs)CAM.imgs=c.imgs.slice();renderImgPrev();
+  if(c&&c.tissue)UI.aiTissue=c.tissue;
+  setMM('man',document.querySelector('#s-form .mt button:last-child'));
+  G('appl-box').style.display='none';G('meas-ui').style.display='none';G('mres-w').style.display='none';G('cam-btns').style.display='none';
+  document.querySelectorAll('.rc').forEach(function(r){r.classList.remove('on');});G('cr-row').style.display='none';
+  initTIME('tf');if(c&&c.timeA)setT('tf',c.timeA);
+  G('fdel').style.display=idx>=0?'':'none';
+  // Carregar dados de tecido se edição
+  if(c&&c.tissue&&c.tissue.vals){FT.vals=Object.assign({gran:40,epit:10,fibr:30,necr:15,biof:5},c.tissue.vals);}else{FT.vals={gran:40,epit:10,fibr:30,necr:15,biof:5};}
+  initTissueSliders();
+}
+
+function setMM(mode,el){
+  document.querySelectorAll('#s-form .mt button').forEach(function(b){b.classList.remove('on');});if(el)el.classList.add('on');
+  G('cam-mode').style.display=mode==='cam'?'block':'none';
+  G('man-mode').style.display=mode==='man'?'block':'none';
+  G('appl-box').style.display='none';
+}
+function ca(){var c=parseFloat(G('f-comp').value)||0,l=parseFloat(G('f-larg').value)||0,p=parseFloat(G('f-prof').value)||0;var e=G('f-calc');if(e){if(c&&l){var a=(c*l).toFixed(1)+' mm2';if(p>0){a=a+' - '+(c*l*p).toFixed(1)+' mm3';}e.value=a;}else{e.value='';}}} 
+function ca2(){var c=parseFloat(G('f-c2').value)||0,l=parseFloat(G('f-l2').value)||0,p=parseFloat(G('f-p2').value)||0;var e=G('f-ca2');if(e){if(c&&l){var a=(c*l).toFixed(1)+' mm2';if(p>0){a=a+' - '+(c*l*p).toFixed(1)+' mm3';}e.value=a;}else{e.value='';}}}
+function selRef(el,mm,label){document.querySelectorAll('.rc').forEach(function(r){r.classList.remove('on');});el.classList.add('on');CAM.refMM=mm;CAM.refL=label;G('cr-row').style.display='none';G('cam-btns').style.display='block';}
+function openCR(){document.querySelectorAll('.rc').forEach(function(r){r.classList.remove('on');});G('rc-cust').classList.add('on');G('cr-row').style.display='block';}
+function confCR(){var v=parseFloat(G('cr-mm').value);if(!v||v<=0){alert('Digite um valor valido.');return;}CAM.refMM=v;CAM.refL='Custom ('+v.toFixed(1)+'mm)';G('cr-lbl').textContent=v.toFixed(1)+'mm';G('cr-row').style.display='none';G('cam-btns').style.display='block';}
+function loadMI(input){
+  if(!CAM.refMM){alert('Selecione a referencia primeiro.');input.value='';return;}
+  var f=input.files[0];if(!f)return;
+  var r=new FileReader();r.onload=function(e){CAM.b64=e.target.result.split(',')[1];CAM.img=new Image();CAM.img.onload=function(){CAM.nw=CAM.img.naturalWidth;CAM.nh=CAM.img.naturalHeight;CAM.cv=G('mc');CAM.cv.width=CAM.nw;CAM.cv.height=CAM.nh;CAM.ctx=CAM.cv.getContext('2d');CAM.ctx.drawImage(CAM.img,0,0);resetM();G('meas-ui').style.display='block';G('mres-w').style.display='none';CAM.imgs.unshift(e.target.result);renderImgPrev();if(!CAM.cv._cl){CAM.cv.addEventListener('click',onMC);CAM.cv._cl=true;}};CAM.img.src=e.target.result;};r.readAsDataURL(f);input.value='';
+}
+function onMC(e){
+  var rect=CAM.cv.getBoundingClientRect();var sx=CAM.nw/rect.width,sy=CAM.nh/rect.height;
+  var x=(e.clientX-rect.left)*sx,y=(e.clientY-rect.top)*sy;
+  var arr=CAM.pts[CAM.mode];if(arr.length>=2)return;arr.push({x:x,y:y});mDraw();
+  if(CAM.mode==='ref'&&arr.length===2){var dx=arr[1].x-arr[0].x,dy=arr[1].y-arr[0].y;CAM.scale=Math.sqrt(dx*dx+dy*dy)/CAM.refMM;setMM2('comp');}
+  else if(CAM.mode==='comp'&&arr.length===2){var dx2=arr[1].x-arr[0].x,dy2=arr[1].y-arr[0].y;CAM.res.comp=Math.sqrt(dx2*dx2+dy2*dy2)/CAM.scale;setMM2('larg');}
+  else if(CAM.mode==='larg'&&arr.length===2){var dx3=arr[1].x-arr[0].x,dy3=arr[1].y-arr[0].y;CAM.res.larg=Math.sqrt(dx3*dx3+dy3*dy3)/CAM.scale;showMR();}
+}
+function setMM2(m){CAM.mode=m;var h={ref:'Marque 2 extremos de '+CAM.refL,comp:'Comprimento maximo da ferida',larg:'Largura maxima da ferida'};G('chi').textContent=h[m];G('stxt').textContent=h[m];document.querySelectorAll('.mmb').forEach(function(b){b.classList.remove('on');});G('mb-'+m).classList.add('on');}
+function mDraw(){
+  if(!CAM.ctx||!CAM.img)return;CAM.ctx.drawImage(CAM.img,0,0);
+  var cols={ref:'#378ADD',comp:'#1D9E75',larg:'#BA7517'};var lbls={ref:CAM.refL,comp:'Comprimento',larg:'Largura'};
+  ['ref','comp','larg'].forEach(function(k){var arr=CAM.pts[k],col=cols[k];if(!arr.length)return;var rr=Math.max(5,CAM.nw/160),lw=Math.max(2,CAM.nw/400);CAM.ctx.strokeStyle=col;CAM.ctx.lineWidth=lw;CAM.ctx.fillStyle=col;arr.forEach(function(p){CAM.ctx.beginPath();CAM.ctx.arc(p.x,p.y,rr,0,Math.PI*2);CAM.ctx.fill();});if(arr.length===2){CAM.ctx.beginPath();CAM.ctx.setLineDash([Math.max(5,CAM.nw/120),3]);CAM.ctx.moveTo(arr[0].x,arr[0].y);CAM.ctx.lineTo(arr[1].x,arr[1].y);CAM.ctx.stroke();CAM.ctx.setLineDash([]);var mx=(arr[0].x+arr[1].x)/2,my=(arr[0].y+arr[1].y)/2;var fs=Math.max(18,CAM.nw/50);CAM.ctx.font='bold '+fs+'px sans-serif';var txt=lbls[k];if(k!=='ref'&&CAM.scale){var dx=arr[1].x-arr[0].x,dy=arr[1].y-arr[0].y;txt+=': '+(Math.sqrt(dx*dx+dy*dy)/CAM.scale).toFixed(1)+' mm';}var tw=CAM.ctx.measureText(txt).width;CAM.ctx.fillStyle='rgba(0,0,0,.65)';CAM.ctx.fillRect(mx-tw/2-6,my-fs-4,tw+12,fs+10);CAM.ctx.fillStyle='#fff';CAM.ctx.textAlign='center';CAM.ctx.textBaseline='bottom';CAM.ctx.fillText(txt,mx,my+4);}});
+}
+function showMR(){var c=CAM.res.comp,l=CAM.res.larg;G('mr-c').textContent=c?c.toFixed(1):'-';G('mr-l').textContent=l?l.toFixed(1):'-';G('mr-a').textContent=(c&&l)?(c*l).toFixed(0):'-';G('mres-w').style.display='block';G('sbar').innerHTML='<span class="sd sg"></span><span>Medicao concluida</span>';}
+function resetM(){CAM.pts={ref:[],comp:[],larg:[]};CAM.scale=null;CAM.res={comp:null,larg:null};CAM.mode='ref';if(CAM.ctx&&CAM.img)CAM.ctx.drawImage(CAM.img,0,0);G('mres-w').style.display='none';G('chi').textContent='Marque 2 extremos';document.querySelectorAll('.mmb').forEach(function(b){b.classList.remove('on');});G('mb-ref').classList.add('on');G('sbar').innerHTML='<span class="sd sa"></span><span id="stxt">Marque a referencia</span>';}
+function applyM(){var c=CAM.res.comp,l=CAM.res.larg;if(!c||!l)return;G('f-c2').value=c.toFixed(1);G('f-l2').value=l.toFixed(1);G('f-p2').value='';ca2();G('appl-lbl').textContent=c.toFixed(1)+' x '+l.toFixed(1)+' mm - Ref: '+CAM.refL;G('meas-ui').style.display='none';G('mres-w').style.display='none';G('appl-box').style.display='block';}
+function redoM(){G('appl-box').style.display='none';G('meas-ui').style.display='block';}
+
+function addIns(nome,qty,un,custo){
+  nome=nome||'';qty=qty||1;un=un||'un';custo=custo||0;
+  var d=document.createElement('div');d.className='ir';
+  var opts=INSUMOS.map(function(s){return'<option'+(s===nome?' selected':'')+'>'+s+'</option>';}).join('');
+  d.innerHTML='<select style="flex:2;min-width:0" onchange="calcIns()">'+opts+'</select><input type="number" value="'+qty+'" min="1" step="1" style="width:46px" onchange="calcIns()"><select style="width:50px" onchange="calcIns()"><option'+(un==='un'?' selected':'')+'>un</option><option'+(un==='cx'?' selected':'')+'>cx</option><option'+(un==='fr'?' selected':'')+'>fr</option></select><input type="number" value="'+custo.toFixed(2)+'" min="0" step="0.01" placeholder="R$" style="width:62px" onchange="calcIns()"><button onclick="this.closest(\'.ir\').remove();calcIns()" style="background:none;border:none;font-size:18px;color:var(--t3);cursor:pointer;padding:4px">x</button>';
+  G('ins-list').appendChild(d);calcIns();
+}
+function calcIns(){var t=0;document.querySelectorAll('#ins-list .ir').forEach(function(r){var inp=r.querySelectorAll('input[type=number]');t+=(parseFloat(inp[0].value)||1)*(parseFloat(inp[1].value)||0);});G('ins-tot').textContent='R$ '+t.toFixed(2).replace('.',',');}
+function getIns(){var rows=[];document.querySelectorAll('#ins-list .ir').forEach(function(r){var sel=r.querySelectorAll('select');var inp=r.querySelectorAll('input[type=number]');rows.push({nome:sel[0].value,qty:parseFloat(inp[0].value)||1,un:sel[1].value,custo:parseFloat(inp[1].value)||0});});return rows;}
+function getExpos(){return EXPO.filter(function(ex){var e=G(ex.id);return e&&e.checked;}).map(function(ex){return ex.id;});}
+function getIcs(){var t=[];var m={infecao:'ic-inf',trauma:'ic-trm',internacao:'ic-int',deiscencia:'ic-dei',outro:'ic-out'};Object.keys(m).forEach(function(k){var e=G(m[k]);if(e&&e.checked)t.push(k);});return t;}
+function addFotos(input){Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){CAM.imgs.push(e.target.result);renderImgPrev();};r.readAsDataURL(f);});input.value='';}
+function renderImgPrev(){G('img-prev').innerHTML=CAM.imgs.map(function(s,i){return'<div class="ith"><img src="'+s+'" loading="lazy"><button class="del" onclick="rmImg('+i+')">x</button></div>';}).join('');}
+function rmImg(i){CAM.imgs.splice(i,1);renderImgPrev();}
+function getMeds(){
+  var appl=G('appl-box').style.display!=='none';
+  var man=G('man-mode').style.display!=='none';
+  if(appl)return{comp:parseFloat(G('f-c2').value)||0,larg:parseFloat(G('f-l2').value)||0,prof:parseFloat(G('f-p2').value)||0,method:'cam'};
+  if(man)return{comp:parseFloat(G('f-comp').value)||0,larg:parseFloat(G('f-larg').value)||0,prof:parseFloat(G('f-prof').value)||0,method:'man'};
+  return{comp:0,larg:0,prof:0,method:'none'};
+}
+function saveC(){
+  var data=G('f-data').value;var m=getMeds();
+  if(!data||m.comp===0||m.larg===0){alert('Preencha data e medidas da ferida.');return;}
+  var ins=getIns();var totalIns=ins.reduce(function(s,i){return s+i.qty*i.custo;},0);
+  var obj={id:Date.now().toString(),pacId:DB.activePacId,wid:G('f-wid').value||UI.woundId,wlabel:G('f-wlabel').value||'Ferida 1',data:data,comp:m.comp,larg:m.larg,prof:m.prof,area:parseFloat((m.comp*m.larg).toFixed(2)),vol:parseFloat((m.comp*m.larg*(m.prof||0)).toFixed(2)),method:m.method,valor:parseFloat(G('f-valor').value)||0,pagto:G('f-pagto').value,aspecto:G('f-asp').value,evol:G('f-evol').value,timeA:getT('tf'),expos:getExpos(),exdesc:G('f-exd').value,ics:getIcs(),icdesc:G('f-icd').value,insumos:ins,totalIns:parseFloat(totalIns.toFixed(2)),imgs:CAM.imgs.slice(),tissue:UI.aiTissue||null};
+  if(UI.editIdx>=0){var cs=getCS();var old=cs[UI.editIdx];var idx=DB.consultas.indexOf(old);if(idx>-1)DB.consultas[idx]=obj;else DB.consultas.push(obj);}else{DB.consultas.push(obj);}
+  DB.consultas.sort(function(a,b){return a.data.localeCompare(b.data);});
+  saveDB();goHome();
+}
+function delC(){if(!confirm('Remover esta consulta?'))return;var cs=getCS();var c=cs[UI.editIdx];var idx=DB.consultas.indexOf(c);if(idx>-1)DB.consultas.splice(idx,1);saveDB();goHome();}
+
+// ===== APRESENTACAO =====
+function showPres(){
+  // Coletar todas as feridas
+  var woundIds=[];var seen={};
+  DB.consultas.forEach(function(ct){if(ct.wid&&!seen[ct.wid]){seen[ct.wid]=true;woundIds.push(ct.wid);}});
+  if(!woundIds.length){alert('Nenhuma consulta registrada.');return;}
+
+  var wounds=woundIds.map(function(id,idx){
+    var cs=DB.consultas.filter(function(ct){return ct.wid===id;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+    var first=cs[0],last=cs[cs.length-1];
+    var red=first.area>0?Math.round((1-last.area/first.area)*100):0;
+    var col=WCOLS[idx%WCOLS.length];
+    var label=last.wlabel||('Ferida '+(idx+1));
+    // % de reducao por consulta para grafico comparativo
+    var pcts=cs.map(function(ct){return first.area>0?parseFloat(((1-ct.area/first.area)*100).toFixed(1)):0;});
+    var datas=cs.map(function(ct){return fmtD(ct.data);});
+    var imgs_antes=cs.filter(function(ct){return ct.imgs&&ct.imgs.length;});
+    return{id:id,label:label,cs:cs,first:first,last:last,red:red,col:col,pcts:pcts,datas:datas,n:cs.length,imgs:imgs_antes};
+  });
+
+  var h='<div style="padding:12px 16px 0">';
+
+  // ---- BANNER GERAL ----
+  h+='<div style="background:var(--g);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px;color:#fff">';
+  h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.75;margin-bottom:4px">Primorcare &bull; Resultado do tratamento</div>';
+  h+='<div style="font-size:14px;font-weight:600;opacity:.9">'+wounds.length+' ferida'+(wounds.length>1?'s':'')+' em acompanhamento</div></div>';
+
+  // ---- CARDS INDIVIDUAIS ----
+  wounds.forEach(function(w){
+    var bl=20;var fi=Math.round(bl*w.red/100);
+    var proj=calcProj(w.cs);
+    var custoIns=w.cs.reduce(function(s,ct){return s+(ct.totalIns||0);},0);
+    var custoCons=w.cs.reduce(function(s,ct){return s+(ct.valor||0);},0);
+    var total=custoIns+custoCons;
+
+    h+='<div class="card" style="border-left:4px solid '+w.col+';margin-bottom:12px">';
+    // Header do card
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">';
+    h+='<div style="width:10px;height:10px;border-radius:50%;background:'+w.col+';flex-shrink:0"></div>';
+    h+='<div style="font-size:14px;font-weight:700;flex:1">'+w.label+'</div>';
+    h+='<div style="font-size:11px;color:var(--t3)">'+w.n+' consultas</div></div>';
+
+    // Métricas
+    h+='<div class="g4" style="margin-bottom:12px">';
+    h+='<div class="met"><div class="ml">Area inicial</div><div class="mv">'+w.first.area.toFixed(0)+'</div><div class="ms">mm2</div></div>';
+    h+='<div class="met"><div class="ml">Area atual</div><div class="mv" style="color:'+w.col+'">'+w.last.area.toFixed(0)+'</div><div class="ms">mm2</div></div>';
+    h+='<div class="met"><div class="ml">Melhora</div><div class="mv" style="color:'+w.col+'">'+w.red+'%</div><div class="ms">'+fmtD(w.first.data)+' - '+fmtD(w.last.data)+'</div></div>';
+    h+='<div class="met"><div class="ml">Previsao</div><div class="mv" style="font-size:14px">'+proj+'</div><div class="ms">fechamento</div></div>';
+    h+='</div>';
+
+    // Barra de progresso
+    h+='<div style="margin-bottom:12px">';
+    h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px"><span>Progresso de cicatrizacao</span><span style="font-weight:700;color:'+w.col+'">'+w.red+'%</span></div>';
+    h+='<div style="height:10px;border-radius:5px;background:#e0dfd8;overflow:hidden"><div style="height:100%;border-radius:5px;background:'+w.col+';width:'+w.red+'%;transition:width .6s"></div></div>';
+    h+='<div style="text-align:center;font-size:12px;color:var(--t2);margin-top:4px">['+'&#9608;'.repeat(fi)+'&#9617;'.repeat(bl-fi)+'] '+w.red+'%</div></div>';
+
+    // Financeiro (se houver)
+    if(total>0){
+      h+='<div style="background:#f5f5f2;border-radius:var(--rr);padding:10px 12px;font-size:12px;color:var(--t2);margin-bottom:10px">';
+      h+='<span style="font-weight:700;color:var(--g)">Investimento: '+fmtR(total)+'</span>';
+      if(custoCons>0)h+=' &bull; Consultas: '+fmtR(custoCons);
+      if(custoIns>0)h+=' &bull; Insumos: '+fmtR(custoIns);
+      h+='</div>';
+    }
+
+    // Before/after se houver fotos
+    if(w.imgs.length>=2){
+      var pri=w.imgs[0],ult=w.imgs[w.imgs.length-1];
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+      h+='<div><div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:4px">INICIO &bull; '+fmtD(pri.data)+'</div><div style="border-radius:var(--rr);overflow:hidden;border:1px solid var(--bd)"><img src="'+pri.imgs[0]+'" style="width:100%;aspect-ratio:1;object-fit:cover"></div><div style="font-size:10px;text-align:center;color:var(--t3);padding:3px">'+pri.area.toFixed(0)+' mm2</div></div>';
+      h+='<div><div style="font-size:10px;font-weight:700;color:'+w.col+';margin-bottom:4px">ATUAL &bull; '+fmtD(ult.data)+'</div><div style="border-radius:var(--rr);overflow:hidden;border:2px solid '+w.col+'"><img src="'+ult.imgs[ult.imgs.length-1]+'" style="width:100%;aspect-ratio:1;object-fit:cover"></div><div style="font-size:10px;text-align:center;color:var(--t3);padding:3px">'+ult.area.toFixed(0)+' mm2</div></div>';
+      h+='</div>';
+    } else if(w.imgs.length===1){
+      h+='<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:4px">Foto mais recente</div><div style="width:120px;border-radius:var(--rr);overflow:hidden;border:2px solid '+w.col+'"><img src="'+w.imgs[w.imgs.length-1].imgs[0]+'" style="width:100%;aspect-ratio:1;object-fit:cover"></div></div>';
+    }
+
+    h+='</div>'; // fecha card
+  });
+
+  // ---- GRÁFICO COMPARATIVO EM % (quando há 2+ feridas) ----
+  if(wounds.length>1){
+    h+='<div class="card"><div class="ct">Evolucao comparativa &bull; % de reducao de area</div>';
+    h+='<div style="font-size:11px;color:var(--t2);margin-bottom:8px;line-height:1.5">Todas as feridas na mesma escala (% desde o inicio) para comparacao justa independente do tamanho inicial.</div>';
+    h+='<div style="position:relative;height:220px"><canvas id="chartMulti"></canvas></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">';
+    wounds.forEach(function(w){
+      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px"><span style="width:10px;height:10px;border-radius:50%;background:'+w.col+';display:inline-block;flex-shrink:0"></span>'+w.label+' ('+w.red+'%)</div>';
+    });
+    h+='</div></div>';
+  }
+
+  // ---- LINHA DO TEMPO UNIFICADA ----
+  h+='<div class="card"><div class="ct">Linha do tempo do tratamento</div>';
+  // Coletar todos os eventos ordenados por data
+  var eventos=[];
+  wounds.forEach(function(w){
+    w.cs.forEach(function(ct,i){
+      eventos.push({data:ct.data,wlabel:w.label,col:w.col,area:ct.area,aspecto:ct.aspecto,red:w.first.area>0?Math.round((1-ct.area/w.first.area)*100):0,expo:ct.expos&&ct.expos.length,ic:ct.ics&&ct.ics.length,first:i===0});
+    });
+  });
+  eventos.sort(function(a,b){return a.data.localeCompare(b.data);});
+  eventos.forEach(function(ev,i){
+    var isLast=i===eventos.length-1;
+    h+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">';
+    h+='<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0"><div style="width:10px;height:10px;border-radius:50%;background:'+ev.col+';margin-top:4px"></div>'+(isLast?'':'<div style="width:1px;flex:1;background:var(--bd);margin:2px 0"></div>')+'</div>';
+    h+='<div style="flex:1;padding-bottom:8px"><div style="font-size:10px;color:var(--t3)">'+fmtD(ev.data)+'</div>';
+    h+='<div style="font-size:13px;font-weight:700;color:var(--tx)"><span style="color:'+ev.col+'">'+ev.wlabel+'</span> &bull; '+ev.area.toFixed(0)+' mm2</div>';
+    h+='<div style="font-size:11px;color:var(--t2);margin-top:1px">'+(ev.aspecto||'Avaliacao')+' &bull; Reducao: '+ev.red+'%'+(ev.expo?' &bull; <span style="color:var(--r)">&#9888; exposta</span>':'')+(ev.ic?' &bull; <span style="color:var(--a)">intercorrencia</span>':'')+'</div></div></div>';
+  });
+  h+='</div>';
+
+  h+='</div>'; // fecha padding
+
+  G('pres-c').innerHTML=h;
+  showScr('s-pres');
+
+  // Renderizar gráfico comparativo após o DOM estar pronto
+  if(wounds.length>1){
+    setTimeout(function(){
+      var cv=G('chartMulti');if(!cv)return;
+      var allDates=[];var seenD={};
+      wounds.forEach(function(w){w.datas.forEach(function(d){if(!seenD[d]){seenD[d]=true;allDates.push(d);}});});
+      allDates.sort(function(a,b){
+        var pa=a.split('/');var pb=b.split('/');
+        return (pa[2]+pa[1]+pa[0]).localeCompare(pb[2]+pb[1]+pb[0]);
+      });
+      var datasets=wounds.map(function(w){
+        var dataMap={};w.datas.forEach(function(d,i){dataMap[d]=w.pcts[i];});
+        return{
+          label:w.label,
+          data:allDates.map(function(d){return dataMap[d]!==undefined?dataMap[d]:null;}),
+          borderColor:w.col,backgroundColor:w.col+'22',
+          borderWidth:2.5,pointRadius:5,pointBackgroundColor:w.col,
+          fill:false,tension:0.3,spanGaps:false
+        };
+      });
+      if(G('chartMulti')._chart)G('chartMulti')._chart.destroy();
+      var ch=new Chart(cv,{type:'line',data:{labels:allDates,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+'% reducao';}}}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{min:0,max:100,ticks:{callback:function(v){return v+'%';},font:{size:10}},title:{display:true,text:'% de reducao desde o inicio',font:{size:10}}}}}});
+      G('chartMulti')._chart=ch;
+    },100);
+  }
+}
+
+// ===== ANALISE IA =====
+function loadAI(input){
+  var f=input.files[0];if(!f)return;
+  // Detectar media_type real do arquivo
+  var mt=f.type||'image/jpeg';
+  // iOS envia HEIC — converter para jpeg via canvas
+  var r=new FileReader();
+  r.onload=function(e){
+    var dataUrl=e.target.result;
+    // Usar canvas para garantir JPEG independente do formato original
+    var img=new Image();
+    img.onload=function(){
+      var cv=document.createElement('canvas');
+      cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+      var ctx=cv.getContext('2d');
+      ctx.drawImage(img,0,0);
+      var jpegUrl=cv.toDataURL('image/jpeg',0.85);
+      UI.aiB64=jpegUrl.split(',')[1];
+      UI.aiImg=new Image();
+      UI.aiImg.onload=function(){
+        G('anal-intro').style.display='none';
+        G('anal-load').style.display='block';
+        G('anal-res').style.display='none';
+        runAI();
+      };
+      UI.aiImg.src=jpegUrl;
+    };
+    img.onerror=function(){alert('Nao foi possivel carregar a imagem. Tente outra foto.');};
+    img.src=dataUrl;
+  };
+  r.readAsDataURL(f);
+  input.value='';
+}
+
+async function runAI(){
+  var msgs=[
+    ['Analisando tecidos...','Identificando tipos de tecido'],
+    ['Segmentando...','Classificando pixel a pixel'],
+    ['Calculando...','Quantificando cada tipo'],
+    ['Gerando interpretacao...','Preparando recomendacao']
+  ];
+  var mi=0;
+  var iv=setInterval(function(){
+    mi=(mi+1)%msgs.length;
+    var m=G('al-msg');var s=G('al-sub');
+    if(m)m.textContent=msgs[mi][0];
+    if(s)s.textContent=msgs[mi][1];
+  },1800);
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1024,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:UI.aiB64}},
+          {type:'text',text:'Voce e especialista em estomaterapia. Analise esta foto de ferida cronica. Responda APENAS em JSON valido, sem markdown, sem texto antes ou depois: {"tecidos":{"granulacao":0,"epitelizacao":0,"fibrina":0,"necrose":0,"biofilme":0},"score":0,"fase":"Inflamatoria","estadio":"Estagio 1","achados":"","cobertura":"","alertas":""}. Os valores de tecidos devem somar 100.'}
+        ]}]
+      })
+    });
+    clearInterval(iv);
+    if(!resp.ok){
+      var errText=await resp.text();
+      throw new Error('API '+resp.status+': '+errText.slice(0,200));
+    }
+    var data=await resp.json();
+    var raw=data.content.map(function(b){return b.type==='text'?b.text:'';}).join('').trim();
+    // Limpar markdown se vier
+    raw=raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    var parsed=JSON.parse(raw);
+    UI.aiTissue=parsed;
+    renderAI(parsed);
+  }catch(e){
+    clearInterval(iv);
+    var msg=e.message||'Erro desconhecido';
+    // Mostrar erro detalhado
+    var loadEl=G('anal-load');
+    if(loadEl){
+      loadEl.innerHTML='<div style="padding:20px;text-align:center"><div style="font-size:24px;margin-bottom:8px">&#9888;</div><div style="font-weight:700;color:var(--r);margin-bottom:8px">Erro na analise</div><div style="font-size:12px;color:var(--t2);margin-bottom:16px;word-break:break-all">'+msg+'</div><button class="btn bs" onclick="resetAI()">Tentar novamente</button></div>';
+    } else {
+      alert('Erro: '+msg);resetAI();
+    }
+  }
+}
+
+
+function resetAI(){UI.aiImg=null;UI.aiB64=null;UI.aiTissue=null;G('anal-intro').style.display='block';G('anal-load').style.display='none';G('anal-res').style.display='none';}
+function saveAI(){if(!UI.aiTissue)return;alert('Analise salva! Sera incluida na proxima consulta.');goHome();}
+
+// ===== HEALTH PLAN =====
+function hpTab(i,el){document.querySelectorAll('#s-hp .tab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('#s-hp .pan').forEach(function(p){p.classList.remove('on');});el.classList.add('on');var pan=G('hp'+i);if(pan)pan.classList.add('on');if(i===4)hpProg();if(i===5)buildPlan();}
+function hpArea(){var c=parseFloat(G('hp-comp').value)||0,l=parseFloat(G('hp-larg').value)||0,p=parseFloat(G('hp-prof').value)||0;var e=G('hp-area');if(e){if(c&&l){var a=(c*l).toFixed(1)+' mm2';if(p>0){a=a+' - '+(c*l*p).toFixed(1)+' mm3';}e.value=a;}else{e.value='';}}} 
+function hpProg(){
+  var eb=G('hp-evid');var ml=G('hp-mods');var pb=G('hp-pbanner');var rs=G('hp-refs-c');var pc=G('hp-pc');
+  var res=calcPrognose();
+  if(!res){
+    if(eb)eb.innerHTML='Selecione a <strong>etiologia</strong> na aba Lesao.';
+    if(ml)ml.innerHTML='';if(pb)pb.innerHTML='';
+    if(rs)rs.style.display='none';if(pc)pc.style.display='none';
+    return;
+  }
+  HP.rate=res.taxaFinal;
+  if(eb){
+    var corE=res.corRisco;
+    eb.innerHTML='<div style="font-size:13px;font-weight:700;color:'+corE+';margin-bottom:6px">Prognostico: <span style="font-size:16px">'+res.risco+'</span></div>'+
+      '<div style="font-size:12px;color:var(--t2);line-height:1.6">Taxa base: <strong>'+res.taxaBase.toFixed(1)+'%/sem</strong> &rarr; Taxa ajustada: <strong style="color:'+corE+'">'+res.taxaFinal.toFixed(1)+'%/sem</strong><br>'+
+      'Fator acumulado das comorbidades: '+Math.round((1-res.fator)*100)+'% de reducao<br>'+
+      'Fechamento estimado: <strong>'+res.sem100+' semanas</strong> (IC80%: '+res.sem100_min+'-'+res.sem100_max+' sem)</div>';
+  }
+  if(ml){
+    var rows='';
+    res.mods.forEach(function(m){
+      rows+='<div class="mdr"><div style="flex:1"><span class="mdl">'+m.l+'</span>';
+      if(m.mecan){rows+='<div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.4">'+m.mecan+'</div>';}
+      rows+='</div><span class="mdv" style="color:'+m.cor+'">'+m.v+'</span>';
+      if(m.r){rows+='<span class="mdr-r" style="font-size:9px">'+m.r.split(';')[0]+(m.nivel?' [Niv.'+m.nivel+']':'')+'</span>';}
+      rows+='</div>';
+    });
+    ml.innerHTML=rows;
+  }
+  if(pb){
+    var cls=res.risco==='Favoravel'?'g':res.risco==='Moderado'?'w':'r';
+    pb.innerHTML='<div class="prog-b '+cls+'">' +
+      '<div style="font-size:15px;font-weight:700;color:'+res.corRisco+';margin-bottom:10px">'+res.taxaFinal.toFixed(1)+'%/semana &bull; Prognostico '+res.risco+'</div>'+
+      '<div class="p3">'+
+        '<div><div class="pil">Reducao 50%</div><div class="piv" style="color:'+res.corRisco+'">'+res.sem50+' sem</div></div>'+
+        '<div><div class="pil">Fechamento estimado</div><div class="piv" style="color:'+res.corRisco+'">'+res.sem100+' sem</div></div>'+
+        '<div><div class="pil">IC 80%</div><div class="piv" style="font-size:13px;color:'+res.corRisco+'">'+res.sem100_min+'-'+res.sem100_max+' sem</div></div>'+
+      '</div>'+
+      '<div style="font-size:11px;color:var(--t2);margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)">'+
+        'Modelo baseado em '+res.refs.length+' referencias indexadas (PubMed/MEDLINE). Modelo de reducao exponencial de area (Margolis et al., JAMA 2004).'+
+      '</div></div>';
+  }
+  if(pc)pc.style.display='block';
+  renderProgChart(res.taxaFinal,res.areaMM2||100);
+  if(rs){
+    rs.style.display='block';
+    var refEl=G('hp-refs');
+    if(refEl){
+      refEl.innerHTML=res.refs.map(function(r,i){
+        return '<div class="ri"><span style="font-size:10px;color:var(--t);font-weight:700;margin-right:6px">[Nivel '+r.nivel+']</span>'+r.r+(r.doi?'<a href="https://doi.org/'+r.doi+'" target="_blank" style="font-size:9px;color:var(--t);margin-left:4px">DOI</a>':'')+'</div>';
+      }).join('');
+    }
+  }
+}
+function renderProgChart(rate,areaInicial){
+  if(UI.chartP){UI.chartP.destroy();UI.chartP=null;}
+  var cv=G('hpProgChart');if(!cv)return;
+  areaInicial=areaInicial||100;
+  var nSem=Math.min(Math.ceil(Math.log(0.05)/Math.log(1-rate/100))+2,26);
+  nSem=Math.max(nSem,8);
+  var labels=['Hoje'];var proj=[areaInicial];var otim=[areaInicial];
+  for(var i=1;i<=nSem;i++){
+    labels.push('Sem '+i);
+    proj.push(parseFloat(Math.max(0,areaInicial*Math.pow(1-rate/100,i)).toFixed(1)));
+    otim.push(parseFloat(Math.max(0,areaInicial*Math.pow(1-(rate*1.2)/100,i)).toFixed(1)));
+  }
+  UI.chartP=new Chart(cv,{type:'line',data:{labels:labels,datasets:[
+    {label:'Conservadora',data:proj,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.07)',borderWidth:2.5,pointRadius:3,fill:true,tension:0.35},
+    {label:'Otimista (+20%)',data:otim,borderColor:'#378ADD',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0.35}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11}}}},scales:{y:{ticks:{callback:function(v){return v.toFixed(0)+' mm2';}},min:0}}}});
+}
+function buildPlan(){
+  if(UI.chartH){UI.chartH.destroy();UI.chartH=null;}
+  var vC=parseFloat(G('hp-vcons').value)||250;var vI=parseFloat(G('hp-vins').value)||60;
+  var freq=parseInt(G('hp-freq').value)||7;var sem=parseInt(G('hp-sem').value)||4;
+  var prfN=parseInt(G('hp-prf-n').value)||0;var prfV=parseFloat(G('hp-prf-v').value)||200;
+  var nC=Math.max(1,Math.ceil((sem*7)/freq));
+  var vCT=vC*nC,vIT=vI*nC,vPRF=prfN*prfV,vTotal=vCT+vIT+vPRF;
+  var rate=HP.rate||12;
+  var area=(parseFloat(G('hp-comp').value)||10)*(parseFloat(G('hp-larg').value)||10)||100;
+  var metaPct=Math.min(100,Math.round(rate*sem));var areaF=parseFloat(Math.max(0,area*(1-metaPct/100)).toFixed(1));
+  HP.plan={vC:vC,vI:vI,freq:freq,sem:sem,prfN:prfN,prfV:prfV,nC:nC,vCT:vCT,vIT:vIT,vPRF:vPRF,vTotal:vTotal,rate:rate,area:area,metaPct:metaPct,areaF:areaF};
+  G('hp-mets').innerHTML='<div class="met"><div class="ml">Consultas</div><div class="mv">'+nC+'</div><div class="ms">em '+sem+' sem</div></div><div class="met"><div class="ml">Meta</div><div class="mv mg">'+metaPct+'%</div><div class="ms">reducao</div></div><div class="met"><div class="ml">Area ao final</div><div class="mv mg">'+areaF+'</div><div class="ms">mm2</div></div><div class="met"><div class="ml">Investimento</div><div class="mv">R$&nbsp;'+Math.round(vTotal).toLocaleString('pt-BR')+'</div><div class="ms">estimado</div></div>';
+  var labels=['Hoje'];var proj=[area];var meta=[area];var step=(area-areaF)/sem;
+  for(var i=1;i<=sem;i++){labels.push('Sem '+i);proj.push(parseFloat(Math.max(0,area*Math.pow(1-rate/100,i)).toFixed(1)));meta.push(parseFloat(Math.max(0,area-step*i).toFixed(1)));}
+  UI.chartH=new Chart(G('hpPlanChart'),{type:'line',data:{labels:labels,datasets:[{label:'Projecao (evidencia)',data:proj,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.07)',borderWidth:2.5,pointRadius:4,fill:true,tension:0.35},{label:'Meta do plano',data:meta,borderColor:'#378ADD',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0.35}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11}}}},scales:{y:{ticks:{callback:function(v){return v.toFixed(0)+' mm2';}},min:0}}}});
+  var cH='<div class="cr"><span style="color:var(--t2)">Consultas ('+nC+' x '+fmtR(vC)+')</span><span style="font-weight:700">'+fmtR(vCT)+'</span></div><div class="cr"><span style="color:var(--t2)">Insumos ('+nC+' x '+fmtR(vI)+')</span><span style="font-weight:700">'+fmtR(vIT)+'</span></div>';
+  if(prfN>0)cH+='<div class="cr"><span style="color:var(--t2)">PRF autologo ('+prfN+' x '+fmtR(prfV)+')</span><span style="font-weight:700;color:var(--a)">'+fmtR(vPRF)+'</span></div>';
+  G('hp-cost-d').innerHTML=cH;G('hp-tot').textContent=fmtR(vTotal);
+  var adjList=[].concat(Array.from(HP.adjs)).map(function(id){var a=ADJS.find(function(x){return x.id===id;});return a?a.n:'';}).filter(Boolean);
+  var adjLabels=Array.from(HP.adjs).map(function(id){var a=ADJS.find(function(x){return x.id===id;});return a?a.n:'';}).filter(function(n){return n&&n.indexOf('PRF')<0;});
+  var commits=[
+    nC+' consultas de estomaterapia especializada em '+sem+' semanas',
+    'Registro fotografico e mensuracao digital a cada sessao',
+    'Avaliacao TIME completa (Tissue, Infection, Moisture, Edge) em cada reavaliacao',
+    'Analise tecidual por inteligencia artificial',
+    'Relatorio de evolucao enviado por WhatsApp apos cada consulta',
+    'Plano de cobertura personalizado para o tipo e etiologia da lesao',
+    'Orientacao ao paciente e familiar sobre cuidados em domicilio e sinais de alerta',
+    'Acesso direto a enfermeira entre as sessoes',
+    'Evolucao registrada em prontuario eletronico'
+  ];
+  if(prfN>0)commits.splice(4,0,prfN+' sessao'+(prfN>1?'es':'')+' de PRF autologo - terapia regenerativa processada na clinica com plasma do proprio paciente');
+  adjLabels.forEach(function(n){commits.push(n+' - conforme indicacao clinica da avaliacao');});
+  G('hp-commits').innerHTMLG('hp-commits').innerHTML=commits.map(function(c){return'<div class="ci3"><span style="color:var(--t);font-size:16px;flex-shrink:0">&#10003;</span><span>'+c+'</span></div>';}).join('');
+  G('hp-out').style.display='block';
+}
+async function gerarParecer(){
+  var d=HP.plan;if(!d)buildPlan();d=HP.plan;
+  var btn=G('hp-par-btn');var wrap=G('hp-par');
+  var nome=(G('hp-nome')||{value:'paciente'}).value||'paciente';var local=(G('hp-local')||{value:'lesao'}).value||'lesao';
+  var etioEl=G('hp-etio');var etio=etioEl&&etioEl.options[etioEl.selectedIndex]?etioEl.options[etioEl.selectedIndex].text:'';
+  var comors=COMOR.filter(function(c){var e=G('hc-'+c.id);return e&&e.checked;}).map(function(c){return c.l;}).join(', ');
+  var adjNomes=Array.from(HP.adjs).map(function(id){var a=ADJS.find(function(x){return x.id===id;});return a?a.n:'';}).filter(Boolean).join(', ');
+  var prf=HP.adjs.has('prf');
+  btn.innerHTML='<span class="spin"></span>Gerando...';btn.disabled=true;wrap.innerHTML='<div class="iab">Aguarde...</div>';
+  var prompt='Voce e enfermeira estomaterapeuta. Redija um parecer clinico-comercial para apresentar ao paciente na 1a consulta da Primorcare.\n\nPaciente: '+nome+'\nLesao: '+local+' - '+etio+'\nComorbidades: '+(comors||'nao informadas')+'\nTaxa de cicatrizacao (evidencias): '+d.rate.toFixed(1)+'% por semana\nAdjuvantes: '+(adjNomes||'protocolo padrao')+'\n'+(prf?'PRF autologo: plasma do proprio paciente processado na clinica.':'')+'\nPlano: '+d.nC+' consultas em '+d.sem+' semanas\nMeta: reducao de '+d.metaPct+'%\nInvestimento: '+fmtR(d.vTotal)+'\n\nO parecer deve: 1) Explicar a lesao em linguagem acessivel; 2) Mostrar taxa de cicatrizacao como dado cientifico concreto; 3) Descrever o plano por fases; 4) Justificar '+(prf?'o PRF como terapia regenerativa autologa e ':'')+' cada adjuvante; 5) Apresentar investimento como custo-beneficio; 6) Encerrar com comprometimento pessoal. Max 380 palavras. Tom tecnico mas humano. Sem markdown.';
+  try{var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1100,messages:[{role:'user',content:prompt}]})});var data=await r.json();var texto=data.content.map(function(b){return b.text||'';}).join('').trim();wrap.innerHTML='<div class="iab">'+texto+'</div><button class="btn bs" style="margin-top:10px" onclick="copyText(this.previousElementSibling.textContent)">&#128203; Copiar parecer</button>';}
+  catch(e){wrap.innerHTML='<div class="iab" style="color:var(--t3)">Erro. Verifique conexao.</div>';}
+  btn.innerHTML='&#129504; Gerar';btn.disabled=false;
+}
+function hpWpp(){
+  var d=HP.plan;if(!d)return;var nome=(G('hp-nome')||{value:'paciente'}).value||'paciente';var local=(G('hp-local')||{value:'lesao'}).value||'lesao';
+  var adjNomes=Array.from(HP.adjs).map(function(id){var a=ADJS.find(function(x){return x.id===id;});return a?a.n:'';}).filter(Boolean);var prf=HP.adjs.has('prf');
+  var txt='*PRIMORCARE - Health Plan*\n\nOla, *'+nome+'*!\n\nApos avaliacao completa da sua '+local+':\n\n*Prognostico baseado em evidencias:*\n- Taxa de cicatrizacao: *'+d.rate.toFixed(1)+'% por semana*\n- Meta em '+d.sem+' semanas: *reducao de '+d.metaPct+'%*\n- Area esperada: *'+d.areaF+' mm2*\n\n*Plano de '+d.sem+' semanas:*\n- '+d.nC+' consultas especializadas\n';
+  if(prf)txt+='- *PRF autologo:* '+d.prfN+' sessao'+(d.prfN>1?'es':'')+' com plasma do proprio paciente\n';
+  adjNomes.filter(function(n){return n.indexOf('PRF')<0;}).forEach(function(n){txt+='- '+n+'\n';});
+  txt+='- Relatorio de evolucao apos cada consulta\n\n*Investimento estimado: '+fmtR(d.vTotal)+'*\n\n_Primorcare - Excelencia em cuidado_';
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+function hpCopy(){
+  var d=HP.plan;if(!d)return;var nome=(G('hp-nome')||{value:'Paciente'}).value||'Paciente';
+  var txt='PRIMORCARE - HEALTH PLAN\nPaciente: '+nome+'\n\nTAXA PROGNOSTICA: '+d.rate.toFixed(1)+'%/semana\nMeta '+d.sem+' semanas: -'+d.metaPct+'%\n\nPLANO: '+d.nC+' consultas\nINVESTIMENTO: '+fmtR(d.vTotal)+'\n\nPrimorcare - Excelencia em cuidado';
+  copyText(txt);showCP('hp-cp');
+}
+function hpPDF(){
+  var d=HP.plan;if(!d){buildPlan();d=HP.plan;}if(!d)return;
+  var nome=(G('hp-nome')||{value:'Paciente'}).value||'Paciente';var local=(G('hp-local')||{value:'lesao'}).value||'lesao';
+  var JP=window.jspdf;if(!JP){alert('jsPDF nao carregado.');return;}
+  var doc=new JP.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var W=210,M=15,CW=W-2*M;var y=M;
+  function t(txt,x,yy,sz,col,bold,align){sz=sz||10;col=col||[50,50,50];bold=bold||false;align=align||'left';doc.setFontSize(sz);doc.setTextColor(col[0],col[1],col[2]);doc.setFont('helvetica',bold?'bold':'normal');doc.text(String(txt),x,yy,{align:align});}
+  function chk(n){if(y+(n||20)>285){doc.addPage();y=M;}}
+  doc.setFillColor(26,58,26);doc.rect(0,0,210,14,'F');t('primorcare',M,10,14,[255,255,255],true);t('Health Plan - '+todayBR(),W-M,10,8,[200,220,200],false,'right');
+  y=22;doc.setFillColor(245,248,245);doc.rect(M,y-3,CW,20,'F');t('Paciente: '+nome,M+2,y+2,10,[26,58,26],true);t('Lesao: '+local,M+2,y+9,9,[90,90,90]);t(todayBR(),W-M,y+2,9,[90,90,90],false,'right');y+=24;
+  chk(40);t('Indice Prognostico - Base em Evidencias',M,y,11,[26,58,26],true);y+=6;
+  doc.setFillColor(240,250,245);doc.rect(M,y-3,CW,26,'F');
+  t('Taxa de cicatrizacao personalizada:',M+3,y+2,9,[90,90,90]);t(d.rate.toFixed(1)+'% por semana',W-M-3,y+2,10,[29,158,117],true,'right');
+  t('Meta em '+d.sem+' semanas:',M+3,y+9,9,[90,90,90]);t('Reducao de '+d.metaPct+'%',W-M-3,y+9,9,[50,50,50],false,'right');
+  t('Area estimada ao final:',M+3,y+16,9,[90,90,90]);t(d.areaF+' mm2',W-M-3,y+16,9,[50,50,50],false,'right');y+=30;
+  chk(50);t('Investimento Detalhado',M,y,11,[26,58,26],true);y+=6;
+  doc.setFillColor(245,248,245);doc.rect(M,y-3,CW,d.prfN>0?36:26,'F');
+  t('Consultas ('+d.nC+' x R$ '+Math.round(d.vC).toLocaleString('pt-BR')+')',M+3,y+2,9,[90,90,90]);t('R$ '+Math.round(d.vCT).toLocaleString('pt-BR'),W-M-3,y+2,9,[50,50,50],false,'right');
+  t('Insumos ('+d.nC+' x R$ '+Math.round(d.vI).toLocaleString('pt-BR')+')',M+3,y+9,9,[90,90,90]);t('R$ '+Math.round(d.vIT).toLocaleString('pt-BR'),W-M-3,y+9,9,[50,50,50],false,'right');
+  if(d.prfN>0){t('PRF autologo ('+d.prfN+' x R$ '+Math.round(d.prfV).toLocaleString('pt-BR')+')',M+3,y+16,9,[90,90,90]);t('R$ '+Math.round(d.vPRF).toLocaleString('pt-BR'),W-M-3,y+16,10,[186,117,23],true,'right');doc.line(M+3,y+22,W-M-3,y+22);t('TOTAL ESTIMADO',M+3,y+28,10,[26,58,26],true);t('R$ '+Math.round(d.vTotal).toLocaleString('pt-BR'),W-M-3,y+28,12,[29,158,117],true,'right');}
+  else{doc.line(M+3,y+15,W-M-3,y+15);t('TOTAL ESTIMADO',M+3,y+20,10,[26,58,26],true);t('R$ '+Math.round(d.vTotal).toLocaleString('pt-BR'),W-M-3,y+20,12,[29,158,117],true,'right');}
+  y=284;doc.setFillColor(245,248,245);doc.rect(0,y-3,210,15,'F');t('Primorcare - Excelencia em cuidado - '+todayBR(),M,y+3,7,[90,90,90]);t('Valores estimados - nao substitui avaliacao presencial',W-M,y+3,7,[90,90,90],false,'right');
+  doc.save('primorcare-healthplan-'+nome.replace(/ /g,'_')+'.pdf');
+}
+
+// ===== RELATORIO =====
+function relTab(el,tab){document.querySelectorAll('#s-rel .mt button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');['rel-pdf','rel-wpp','rel-pront'].forEach(function(id){var e=G(id);if(e)e.style.display='none';});var rp=G('rel-'+tab);if(rp)rp.style.display='block';}
+function renderRelSels(){
+  var cs=DB.consultas.sort(function(a,b){return a.data.localeCompare(b.data);});
+  var ps=G('pdf-sel');if(ps)ps.innerHTML=cs.map(function(c,i){return'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)"><input type="checkbox" id="ps'+i+'" '+(SEL.pdf.has(i)?'checked':'')+' onchange="togPDF('+i+')" style="width:20px;height:20px;accent-color:var(--t)"><label for="ps'+i+'" style="flex:1;cursor:pointer"><div style="font-size:13px;font-weight:700">'+fmtD(c.data)+'</div><div style="font-size:11px;color:var(--t3)">'+(c.aspecto||'-')+' - '+c.area.toFixed(0)+' mm2</div></label></div>';}).join('');
+  var ws=G('wpp-sel');if(ws){SEL.wppIdx=Math.min(SEL.wppIdx,cs.length-1);ws.innerHTML=cs.map(function(c,i){return'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)" onclick="wppSelC('+i+')"><input type="radio" name="wr" '+(SEL.wppIdx===i?'checked':'')+' style="width:20px;height:20px;accent-color:var(--t)"><div style="flex:1"><div style="font-size:13px;font-weight:700">'+fmtD(c.data)+(i===cs.length-1?' <span class="tg tok">Recente</span>':'')+'</div><div style="font-size:11px;color:var(--t3)">'+(c.aspecto||'-')+' - '+c.area.toFixed(0)+' mm2</div></div></div>';}).join('');}
+}
+function togPDF(i){if(SEL.pdf.has(i))SEL.pdf.delete(i);else SEL.pdf.add(i);}
+function pdfAll(){var cs=DB.consultas;if(SEL.pdf.size===cs.length)SEL.pdf.clear();else cs.forEach(function(c,i){SEL.pdf.add(i);});renderRelSels();}
+function wppSelC(i){SEL.wppIdx=i;renderRelSels();}
+function gerarWpp(){
+  var cs=DB.consultas.sort(function(a,b){return a.data.localeCompare(b.data);});if(!cs.length){alert('Nenhuma consulta.');return;}
+  var nome=(G('wpp-nome')||{value:'paciente'}).value||'paciente';var diag=(G('wpp-diag')||{value:'ferida'}).value||'ferida';
+  var destEl=G('wpp-dest');var dest=destEl?destEl.value:'paciente';
+  var c=cs[SEL.wppIdx]||cs[cs.length-1];var first=cs[0];var red=first.area>0?Math.round((1-c.area/first.area)*100):0;
+  var showC=dest!=='medico'&&G('wpp-custo')&&G('wpp-custo').checked;
+  var msg=dest==='medico'?'*Relatorio Primorcare*\n\n*Paciente:* '+nome+'\n*Diagnostico:* '+diag+'\n\n':'Ola, *'+nome+'*!\n\n*Atualizacao - '+diag+'*\n\n';
+  msg+='*Consulta:* '+fmtD(c.data)+'\n\n*Medicoes:*\n- Comprimento: *'+c.comp.toFixed(1)+' mm*\n- Largura: *'+c.larg.toFixed(1)+' mm*\n- Area: *'+c.area.toFixed(0)+' mm2*\n\n';
+  msg+='*Evolucao:*\n- Inicial: '+first.area.toFixed(0)+' mm2\n- Atual: *'+c.area.toFixed(0)+' mm2*\n- Melhora: *'+red+'%*\n\n';
+  var bl=20,fi=Math.round(bl*red/100);msg+='['+Array(fi+1).join('\u2588')+Array(bl-fi+1).join('\u2591')+'] *'+red+'%*\n\n';
+  if(G('wpp-evol')&&G('wpp-evol').checked&&c.evol)msg+='*Avaliacao clinica:*\n'+c.evol+'\n\n';
+  if(G('wpp-tec')&&G('wpp-tec').checked&&c.tissue){var t=c.tissue;var tot=Object.values(t.tecidos).reduce(function(a,b){return a+b;},0);msg+='*Analise tecidual:*\n';Object.entries(t.tecidos).forEach(function(kv){var pct=tot>0?Math.round(kv[1]/tot*100):0;if(pct)msg+='- '+TC[kv[0]].l+': *'+pct+'%*\n';});msg+='Score: *'+t.score+'/10*\n\n';}
+  if(G('wpp-prox')&&G('wpp-prox').checked)msg+='*Previsao de fechamento:* '+calcProj(getCS())+'\n\n';
+  if(showC){var custoIns=cs.reduce(function(s,c2){return s+(c2.totalIns||0);},0);var custoCons=cs.reduce(function(s,c2){return s+(c2.valor||0);},0);msg+='*Investimento acumulado:* '+fmtR(custoIns+custoCons)+'\n\n';}
+  if(dest==='familiar')msg+='Sua presenca faz toda a diferenca na recuperacao.\n\n';
+  if(G('wpp-ass')&&G('wpp-ass').checked)msg+='---\n*Primorcare - Excelencia em cuidado*\n_'+todayBR()+'_';
+  G('wpp-prev').textContent=msg;window._wppTxt=msg;G('wpp-res').style.display='block';
+}
+function copWpp(){copyText(window._wppTxt||'');showCP('wpp-cp');}
+function abrirWpp(){window.open('https://wa.me/?text='+encodeURIComponent(window._wppTxt||''),'_blank');}
+function gerarPDF(){
+  var cs=DB.consultas.sort(function(a,b){return a.data.localeCompare(b.data);});
+  var sels=Array.from(SEL.pdf).sort().map(function(i){return cs[i];}).filter(Boolean);
+  if(!sels.length){alert('Selecione ao menos uma consulta.');return;}
+  var nome=(G('pdf-nome')||{value:'Paciente'}).value||'Paciente';var diag=(G('pdf-diag')||{value:'-'}).value||'-';
+  var dest=(G('pdf-dest')||{value:'clinico'}).value||'clinico';
+  var showC=dest==='clinico'||(dest==='familiar'&&G('opt-custo')&&G('opt-custo').checked);
+  var JP=window.jspdf;if(!JP){alert('jsPDF nao carregado.');return;}
+  var doc=new JP.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var W=210,M=15,CW=W-2*M;var y=M;
+  function t(txt,x,yy,sz,col,bold,align){sz=sz||10;col=col||[50,50,50];bold=bold||false;align=align||'left';doc.setFontSize(sz);doc.setTextColor(col[0],col[1],col[2]);doc.setFont('helvetica',bold?'bold':'normal');doc.text(String(txt),x,yy,{align:align});}
+  function chk(n){if(y+(n||20)>285){doc.addPage();y=M;}}
+  doc.setFillColor(26,58,26);doc.rect(0,0,210,14,'F');t('primorcare',M,10,14,[255,255,255],true);t('Relatorio de evolucao - '+todayBR(),W-M,10,8,[200,220,200],false,'right');
+  y=22;doc.setFillColor(245,248,245);doc.rect(M,y-3,CW,18,'F');t('Paciente: '+nome,M+2,y+2,9,[90,90,90]);t(nome,M+26,y+2,9,[26,58,26],true);t('Diagnostico: '+diag,M+2,y+9,9,[90,90,90]);if(cs.length>0){var f=cs[0],l=cs[cs.length-1];var rd=f.area>0?Math.round((1-l.area/f.area)*100):0;t('Reducao: '+rd+'%',W-M,y+2,9,[29,158,117],true,'right');t('Consultas: '+sels.length,W-M,y+9,9,[90,90,90],false,'right');}y+=22;
+  if(G('opt-med')&&G('opt-med').checked){chk(40);t('Evolucao das medicoes',M,y,10,[26,58,26],true);y+=5;var cols=[['Data',28],['Comp',20],['Larg',20],['Area mm2',28],['Variacao',26]];var cx=M;doc.setFillColor(26,58,26);doc.rect(M,y-4,CW,7,'F');cols.forEach(function(h){t(h[0],cx+1,y,7.5,[255,255,255],true);cx+=h[1];});y+=4;sels.forEach(function(c,idx){chk(8);var prev=idx>0?sels[idx-1]:null;var delta=prev?prev.area-c.area:null;var dStr=delta!==null?(delta>=0?'-'+delta.toFixed(0):'+'+Math.abs(delta).toFixed(0)):'-';if(idx%2===0){doc.setFillColor(248,252,248);doc.rect(M,y-3,CW,6,'F');}cx=M;[[fmtD(c.data),28],[c.comp.toFixed(1),20],[c.larg.toFixed(1),20],[c.area.toFixed(0),28],[dStr,26]].forEach(function(v,ri){doc.setFontSize(8);if(ri===3){doc.setTextColor(29,158,117);doc.setFont('helvetica','bold');}else{doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');}doc.text(String(v[0]),cx+1,y);cx+=v[1];});y+=6;});y+=5;}
+  if(G('opt-evol')&&G('opt-evol').checked){var evS=sels.filter(function(c){return c.evol||c.expos&&c.expos.length;});if(evS.length){chk(15);t('Notas clinicas',M,y,10,[26,58,26],true);y+=5;evS.forEach(function(c){var lines=[];if(c.expos&&c.expos.length){var exLabels=c.expos.map(function(id){var ex=EXPO.find(function(x){return x.id===id;});return ex?ex.l:id;});lines.push('Exposicao: '+exLabels.join(', '));}if(c.evol)lines.push(c.evol);if(!lines.length)return;var lh=lines.length*5+10;chk(lh);doc.setFillColor(245,250,247);doc.rect(M,y-4,CW,lh,'F');doc.setFillColor(29,158,117);doc.rect(M,y-4,2,lh,'F');t(fmtD(c.data),M+5,y,9,[26,58,26],true);y+=5;lines.forEach(function(ln){var w=doc.splitTextToSize(ln,CW-10);w.forEach(function(wl){t(wl,M+5,y,8,[80,80,80]);y+=4.5;});});y+=4;});}}
+  if(showC){chk(30);t('Financeiro',M,y,10,[26,58,26],true);y+=5;var custoIns=cs.reduce(function(s,c){return s+(c.totalIns||0);},0);var custoCons=cs.reduce(function(s,c){return s+(c.valor||0);},0);doc.setFillColor(245,248,245);doc.rect(M,y-3,CW,18,'F');t('Custo de insumos:',M+3,y+2,9,[90,90,90]);t(fmtR(custoIns),W-M-3,y+2,9,[50,50,50],false,'right');t('Valor das consultas:',M+3,y+9,9,[90,90,90]);t(fmtR(custoCons),W-M-3,y+9,9,[50,50,50],false,'right');y+=22;chk(10);t('TOTAL DO TRATAMENTO: '+fmtR(custoIns+custoCons),M,y,10,[26,58,26],true);y+=10;}
+  y=284;doc.setFillColor(245,248,245);doc.rect(0,y-3,210,15,'F');t('Primorcare - Excelencia em cuidado - '+todayBR(),M,y+3,7,[90,90,90]);t('Documento clinico - nao substitui avaliacao presencial',W-M,y+3,7,[90,90,90],false,'right');
+  doc.save('primorcare-'+nome.replace(/ /g,'_')+'.pdf');
+}
+
+// ===== PRONTUÁRIO =====
+var prFmt='n';
+function prArea(){var c=parseFloat(G('pr-comp').value)||0,l=parseFloat(G('pr-larg').value)||0,p=parseFloat(G('pr-prof').value)||0;var e=G('pr-area');if(e){if(c&&l){var a=(c*l).toFixed(1)+' mm2';if(p>0){a=a+' - '+(c*l*p).toFixed(1)+' mm3';}e.value=a;}else{e.value='';}}}
+function setPrF(f,el){prFmt=f;['pr-fn','pr-fs','pr-ft','pr-fi'].forEach(function(id){var b=G(id);if(b){b.classList.remove('bp');}});el.classList.add('bp');}
+function fmtDv(v){if(!v)return'';var p=v.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function getPrD(){return{nome:(G('pr-nome')||{value:'Paciente'}).value||'Paciente',data:fmtDv((G('pr-data')||{value:''}).value),cid:(G('pr-cid')||{value:''}).value,diag:(G('pr-diag')||{value:''}).value,comp:(G('pr-comp')||{value:''}).value,larg:(G('pr-larg')||{value:''}).value,prof:(G('pr-prof')||{value:''}).value,area:(G('pr-area')||{value:''}).value,asp:(G('pr-asp')||{value:''}).value,evol:(G('pr-evol')||{value:''}).value,proc:(G('pr-proc')||{value:''}).value,cob:(G('pr-cob')||{value:''}).value,orient:(G('pr-orient')||{value:''}).value,prox:fmtDv((G('pr-prox')||{value:''}).value),coren:(G('pr-coren')||{value:''}).value};}
+function fmtN(d){var t='EVOLUCAO CLINICA - ESTOMATERAPIA\nData: '+(d.data||'__/__/____')+' | '+(d.coren||'___')+'\nPaciente: '+d.nome+(d.cid?' | CID: '+d.cid:'')+'\n\nLesao: '+(d.diag||'___')+'.\n';if(d.comp&&d.larg)t+='Medidas: '+d.comp+' x '+d.larg+' mm'+(d.prof?' x '+d.prof+' mm':'')+' | Area: '+d.area+'.\n';if(d.asp)t+='Leito: '+d.asp+'. ';if(d.evol)t+=d.evol+'\n';t+='\nConduta: '+d.proc+'. ';if(d.cob)t+='Cobertura: '+d.cob+'. ';if(d.orient)t+='\nOrientacoes: '+d.orient;if(d.prox)t+='\nRetorno: '+d.prox+'.';return t.trim();}
+function fmtS(d){var t='SOAP | '+d.data+' | '+(d.coren||'')+'\nPaciente: '+d.nome+(d.cid?' | CID: '+d.cid:'')+'\n\nS: Paciente em acompanhamento por '+(d.diag||'lesao')+'.\n\nO: ';if(d.comp&&d.larg)t+='Medidas: '+d.comp+' x '+d.larg+' mm | Area: '+d.area+'. ';if(d.asp)t+='Leito: '+d.asp+'. ';if(d.evol)t+=d.evol;t+='\n\nA: Lesao com '+(d.asp||'aspectos descritos')+'.\n\nP: '+d.proc+'. ';if(d.cob)t+='Cobertura: '+d.cob+'. ';if(d.orient)t+=d.orient+'. ';if(d.prox)t+='Retorno: '+d.prox+'.';return t.trim();}
+function fmtT(d){var t='EVOLUCAO | '+d.data+' | '+(d.coren||'')+'\nPaciente: '+d.nome+'\n\n';if(d.diag)t+='- Lesao: '+d.diag+'\n';if(d.comp&&d.larg)t+='- Medidas: '+d.comp+' x '+d.larg+' mm | Area: '+d.area+'\n';if(d.asp)t+='- Leito: '+d.asp+'\n';if(d.evol)t+='- Evolucao: '+d.evol+'\n';t+='- Conduta: '+d.proc+'\n';if(d.cob)t+='- Cobertura: '+d.cob+'\n';if(d.orient)t+='- Orientacoes: '+d.orient+'\n';if(d.prox)t+='- Retorno: '+d.prox;return t.trim();}
+async function gerarPront(){
+  var d=getPrD();var box=G('pr-txt');var res=G('pr-res');
+  if(prFmt!=='i'){var tx='';if(prFmt==='n')tx=fmtN(d);else if(prFmt==='s')tx=fmtS(d);else tx=fmtT(d);box.textContent=tx;res.style.display='block';return;}
+  box.textContent='Aguarde - Claude esta redigindo...';res.style.display='block';
+  var prompt='Voce e enfermeira estomaterapeuta. Redija evolucao clinica profissional para prontuario:\nPaciente: '+d.nome+'\nData: '+d.data+'\nDiagnostico: '+d.diag+(d.cid?' ('+d.cid+')':'')+'\nMedidas: '+d.comp+' x '+d.larg+' mm | Area: '+d.area+'\nAspecto: '+d.asp+'\nEvolucao: '+d.evol+'\nConduta: '+d.proc+'\nCobertura: '+d.cob+'\nOrientacoes: '+d.orient+'\nRetorno: '+d.prox+'\nProfissional: '+d.coren+'\nRedigie em linguagem tecnica fluente, padrao prontuario medico brasileiro. Inicie com Evolucao clinica: Sem markdown.';
+  try{var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});var data=await r.json();box.textContent=data.content.map(function(b){return b.text||'';}).join('').trim();}
+  catch(e){box.textContent=fmtN(d)+'\n[Erro IA]';}
+}
+function copPront(){copyText(G('pr-txt').textContent||'');showCP('pr-cp');}
+function wppPront(){var t=G('pr-txt').textContent;if(!t)return;window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');}
+
+
+var WCOLS=['#1D9E75','#378ADD','#BA7517','#A32D2D','#7B61FF'];
+function getWounds(){
+  var ids=[];var seen={};
+  DB.consultas.forEach(function(ct){if(ct.wid&&!seen[ct.wid]){seen[ct.wid]=true;ids.push(ct.wid);}});
+  if(!ids.length){ids=[UI.woundId||'w1'];}
+  return ids.map(function(id,idx){
+    var cs=DB.consultas.filter(function(ct){return ct.wid===id;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+    var last=cs[cs.length-1];
+    return{id:id,label:last&&last.wlabel?last.wlabel:'Ferida '+(idx+1),area:last?last.area:0,n:cs.length,col:WCOLS[idx%WCOLS.length]};
+  });
+}
+function renderWounds(){
+  var wounds=getWounds();
+  var panel=G('wound-panel');var pills=G('wound-pills');
+  if(!panel||!pills)return;
+  var show=wounds.length>1||(wounds.length===1&&DB.consultas.length>0);
+  panel.style.display=show?'block':'none';
+  if(!UI.woundId&&wounds.length)UI.woundId=wounds[0].id;
+  var h='';
+  wounds.forEach(function(w){
+    var act=UI.woundId===w.id;
+    h+='<div class="w-pill'+(act?' on':'')+'" data-wid="'+w.id+'" onclick="selWound(this.dataset.wid)" style="border-color:'+(act?w.col:'var(--bd2)')+';background:'+(act?w.col+'18':'#fff')+'">';
+    h+='<span class="w-dot" style="background:'+w.col+'"></span>';
+    h+='<span>'+w.label+'</span>';
+    h+='<span class="w-area">&nbsp;'+w.area.toFixed(0)+'mm2 ('+w.n+')</span></div>';
+  });
+  pills.innerHTML=h;
+}
+function selWound(id){UI.woundId=id;renderWounds();renderMetrics();renderChart(UI.chartTab);renderList();}
+function addWound(){
+  var wounds=getWounds();var n=wounds.length+1;
+  var newId='w'+Date.now();UI.woundId=newId;
+  initForm(-1);
+  var wl=G('f-wlabel');if(wl)wl.value='Ferida '+n;
+  var wi=G('f-wid');if(wi)wi.value=newId;
+  showScr('s-form');
+}
+
+function abrirEditPacAtivo(){if(DB.activePacId)abrirEditPac(DB.activePacId);}
+function selPacBtn(el){selectPac(el.getAttribute('data-pid'));}
+function editarPacBtn(el){abrirEditPac(el.getAttribute('data-pid'));}
+function goBack(){showScr('s-lista');renderLista();}
+// ===== INIT =====
+
+// ============================================================
+// MÓDULO MULTI-PACIENTE
+// ============================================================
+
+// ---- ESTRUTURA DO DB ----
+// DB = {
+//   pacientes: [{id, nome, nasc, tel, med, meds, alergia,
+//                comor[], comorOut, hba1c, alb, abi, imc,
+//                status: 'ativo'|'alta'|'pausado',
+//                dataCadastro, obs}],
+//   consultas: [{...existente..., pacId}],
+//   activePacId: null
+// }
+
+// ---- ESTADO ----
+var PAC_UI = {searchTerm:'', filterStatus:'todos'};
+
+// ---- UTILS PACIENTE ----
+function getPacs(){return DB.pacientes||[];}
+function getPac(id){return getPacs().find(function(p){return p.id===id;});}
+function getActivePac(){return getPac(DB.activePacId);}
+function getConsultasByPac(pacId){return (DB.consultas||[]).filter(function(c){return c.pacId===pacId;});}
+function getWoundsByPac(pacId){
+  var cs=getConsultasByPac(pacId);
+  var ids=[];var seen={};
+  cs.forEach(function(c){if(c.wid&&!seen[c.wid]){seen[c.wid]=true;ids.push(c.wid);}});
+  return ids.map(function(id,idx){
+    var wcs=cs.filter(function(c){return c.wid===id;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+    var last=wcs[wcs.length-1];
+    var first=wcs[0];
+    var red=first&&first.area>0?Math.round((1-last.area/first.area)*100):0;
+    return{id:id,label:last&&last.wlabel?last.wlabel:'Ferida '+(idx+1),area:last?last.area:0,red:red,n:wcs.length,ultimaData:last?last.data:null,col:WCOLS[idx%WCOLS.length]};
+  });
+}
+function getUltimaConsulta(pacId){
+  var cs=getConsultasByPac(pacId).sort(function(a,b){return b.data.localeCompare(a.data);});
+  return cs[0]||null;
+}
+function getTotalFinanceiro(pacId){
+  var cs=getConsultasByPac(pacId);
+  var ins=cs.reduce(function(s,c){return s+(c.totalIns||0);},0);
+  var cons=cs.reduce(function(s,c){return s+(c.valor||0);},0);
+  return{ins:ins,cons:cons,total:ins+cons};
+}
+function diasDesdeUltima(pacId){
+  var uc=getUltimaConsulta(pacId);
+  if(!uc)return null;
+  var d=Math.round((new Date(today())-new Date(uc.data))/86400000);
+  return d;
+}
+
+// ---- CRIAR PACIENTE ----
+function newPacId(){return 'p'+Date.now();}
+
+function savePacForm(pacId){
+  var isNew=!pacId;
+  if(isNew)pacId=newPacId();
+  var comors=COMOR.filter(function(cm){var e=G('pe-'+cm.id);return e&&e.checked;}).map(function(cm){return cm.id;});
+  var statusEl=G('pe-status');
+  var p={
+    id:pacId,
+    nome:G('pe-nome').value.trim(),
+    nasc:G('pe-nasc').value,
+    tel:G('pe-tel').value,
+    med:G('pe-med').value,
+    meds:G('pe-meds').value,
+    alergia:G('pe-alergia').value,
+    comor:comors,
+    comorOut:G('pe-comor-out').value,
+    hba1c:G('pe-hba1c').value,
+    alb:G('pe-alb').value,
+    abi:G('pe-abi').value,
+    imc:G('pe-imc').value,
+    status:statusEl?statusEl.value:'ativo',
+    obs:G('pe-obs')?G('pe-obs').value:'',
+    dataCadastro:isNew?today():null
+  };
+  if(!p.nome){alert('Digite o nome do paciente.');return false;}
+  if(!DB.pacientes)DB.pacientes=[];
+  if(isNew){
+    p.dataCadastro=today();
+    DB.pacientes.push(p);
+  } else {
+    var idx=DB.pacientes.findIndex(function(x){return x.id===pacId;});
+    if(idx>=0){
+      p.dataCadastro=DB.pacientes[idx].dataCadastro;
+      DB.pacientes[idx]=p;
+    }
+  }
+  saveDB();
+  return pacId;
+}
+
+function loadPacForm(pacId){
+  var p=pacId?getPac(pacId):null;
+  var fields=['nome','nasc','tel','med','meds','alergia','comorOut','hba1c','alb','abi','imc','obs'];
+  fields.forEach(function(k){var e=G('pe-'+k);if(e)e.value=p?p[k]||'':'';});
+  var se=G('pe-status');if(se)se.value=p?p.status||'ativo':'ativo';
+  COMOR.forEach(function(cm){var e=G('pe-'+cm.id);if(e)e.checked=p&&p.comor?p.comor.indexOf(cm.id)>=0:false;});
+}
+
+function initPacEdit(){
+  var w=G('pe-comor-wrap');if(!w)return;
+  w.className='chk-wrap';
+  w.innerHTML=COMOR.map(function(cm){
+    return '<label><input type="checkbox" id="pe-'+cm.id+'">'+cm.l+'</label>';
+  }).join('');
+}
+
+function deletePac(pacId){
+  if(!confirm('Excluir este paciente e TODAS as suas consultas? Esta acao nao pode ser desfeita.'))return;
+  DB.pacientes=(DB.pacientes||[]).filter(function(p){return p.id!==pacId;});
+  DB.consultas=(DB.consultas||[]).filter(function(c){return c.pacId!==pacId;});
+  if(DB.activePacId===pacId)DB.activePacId=DB.pacientes.length?DB.pacientes[0].id:null;
+  saveDB();
+  showScr('s-lista');
+  renderLista();
+}
+
+// ---- SELECIONAR PACIENTE (abre ficha) ----
+function selectPac(pacId){
+  DB.activePacId=pacId;
+  UI.woundId=null;
+  var wounds=getWoundsByPac(pacId);
+  if(wounds.length)UI.woundId=wounds[0].id;
+  saveDB();
+  renderHome();
+  showScr('s-home');
+  document.querySelectorAll('.ni').forEach(function(e){e.classList.remove('on');});
+  document.querySelectorAll('.ni[data-n="home"]').forEach(function(e){e.classList.add('on');});
+}
+
+// ---- LISTA DE PACIENTES ----
+function renderLista(){
+  var el=G('lista-body');if(!el)return;
+  var search=(PAC_UI.searchTerm||'').toLowerCase();
+  var status=PAC_UI.filterStatus||'todos';
+  var pacs=getPacs().filter(function(p){
+    var matchS=!search||p.nome.toLowerCase().indexOf(search)>=0;
+    var matchF=status==='todos'||p.status===status;
+    return matchS&&matchF;
+  }).sort(function(a,b){return a.nome.localeCompare(b.nome);});
+
+  if(!pacs.length){
+    el.innerHTML='<div class="empty">Nenhum paciente encontrado.<br>Toque em "+ Novo paciente" para cadastrar.</div>';
+    return;
+  }
+
+  el.innerHTML=pacs.map(function(p){
+    var uc=getUltimaConsulta(p.id);
+    var wounds=getWoundsByPac(p.id);
+    var dias=diasDesdeUltima(p.id);
+    var fin=getTotalFinanceiro(p.id);
+    var alerta=dias!==null&&dias>14;
+    var statusCor={ativo:'var(--t)',alta:'var(--blue,#378ADD)',pausado:'var(--a)'}[p.status]||'var(--t3)';
+    var statusLabel={ativo:'Ativo',alta:'Alta',pausado:'Pausado'}[p.status]||p.status;
+
+    var h='<div class="pac-card-item" onclick="selectPac(\''+p.id+'\')">';
+    // Header
+    h+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">';
+    h+='<div style="width:44px;height:44px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0">'+p.nome[0].toUpperCase()+'</div>';
+    h+='<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.nome+'</div>';
+    if(p.nasc){var age=Math.floor((new Date()-new Date(p.nasc))/31557600000);h+='<div style="font-size:11px;color:var(--t3)">'+age+' anos</div>';}
+    h+='</div>';
+    h+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">';
+    h+='<span style="font-size:11px;font-weight:700;color:'+statusCor+';background:'+statusCor+'18;padding:2px 8px;border-radius:10px">'+statusLabel+'</span>';
+    if(alerta)h+='<span style="font-size:10px;color:var(--a)">&#9888; '+dias+'d sem consulta</span>';
+    h+='</div></div>';
+
+    // Feridas
+    if(wounds.length){
+      h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+      wounds.forEach(function(w){
+        h+='<div style="display:flex;align-items:center;gap:5px;background:#f5f5f2;border-radius:8px;padding:4px 9px;font-size:11px">';
+        h+='<span style="width:7px;height:7px;border-radius:50%;background:'+w.col+';display:inline-block"></span>';
+        h+='<span style="font-weight:600">'+w.label+'</span>';
+        h+='<span style="color:var(--t);font-weight:700">-'+w.red+'%</span>';
+        h+='<span style="color:var(--t3)">'+w.area.toFixed(0)+'mm2</span></div>';
+      });
+      h+='</div>';
+    }
+
+    // Rodapé
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--bd)">';
+    h+='<div style="font-size:11px;color:var(--t3)">'+(uc?'Ultima: '+fmtD(uc.data)+' &bull; '+wounds.length+' ferida'+(wounds.length!==1?'s':''):'Sem consultas')+'</div>';
+    if(fin.total>0)h+='<div style="font-size:11px;font-weight:700;color:var(--g)">'+fmtR(fin.total)+'</div>';
+    h+='</div>';
+    h+='</div>';
+    return h;
+  }).join('');
+}
+
+function searchPac(val){PAC_UI.searchTerm=val;renderLista();}
+function filterPac(el,status){
+  PAC_UI.filterStatus=status;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  renderLista();
+}
+
+
+
+// ===== MULTI-PACIENTE =====
+var _pacId=null;
+function getPacs(){return DB.pacientes||[];}
+function getPac(id){return getPacs().find(function(p){return p.id===id;});}
+function getActivePac(){return getPac(DB.activePacId);}
+function voltarLista(){renderLista();showScr('s-lista');}
+
+function renderLista(){
+  var el=G('lista-pacs');if(!el)return;
+  var busca=((G('pac-busca')||{}).value||'').toLowerCase().trim();
+  var pacs=getPacs().filter(function(p){return !busca||p.nome.toLowerCase().indexOf(busca)>=0;})
+    .sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');});
+  if(!pacs.length){el.innerHTML='<div class="empty">Nenhum paciente.<br>Toque em "+ Novo paciente".</div>';return;}
+  el.innerHTML=pacs.map(function(p){
+    var cs=(DB.consultas||[]).filter(function(ct){return ct.pacId===p.id;});
+    var last=cs.slice().sort(function(a,b){return b.data.localeCompare(a.data);})[0];
+    var nf=new Set(cs.map(function(ct){return ct.wid;})).size;
+    var age=p.nasc?Math.floor((new Date()-new Date(p.nasc))/31557600000)+'a':'';
+    var dias=last?Math.round((new Date()-new Date(last.data))/86400000):null;
+    var alerta=p.status==='ativo'&&dias!==null&&dias>14;
+    var stCls={'ativo':'st-a','alta':'st-h','pausado':'st-p'}[p.status]||'st-a';
+    var stLbl={'ativo':'Ativo','alta':'Alta','pausado':'Pausado'}[p.status]||'Ativo';
+    return '<div class="pac-item" data-pid="'+p.id+'" onclick="abrirPac(this.dataset.pid)">'+
+      '<div class="pac-av">'+p.nome[0].toUpperCase()+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="pac-nome">'+p.nome+'</div>'+
+      '<div class="pac-sub">'+(age?age+' anos':'')+(age&&nf?' &bull; ':'')+
+      (nf?nf+' ferida'+(nf!==1?'s':''):'Sem consultas')+(last?' &bull; '+fmtD(last.data):'')+
+      (alerta?' <span style="color:var(--a)">&#9888;</span>':'')+'</div></div>'+
+      '<span class="pac-status '+stCls+'">'+stLbl+'</span></div>';
+  }).join('');
+}
+
+function abrirPac(pacId){
+  DB.activePacId=pacId;UI.woundId=null;
+  var wids=[...new Set((DB.consultas||[]).filter(function(ct){return ct.pacId===pacId;}).map(function(ct){return ct.wid;}))];
+  if(wids.length)UI.woundId=wids[0];
+  saveDB();renderHome();showScr('s-home');
+  document.querySelectorAll('.ni').forEach(function(e){e.classList.remove('on');});
+  document.querySelectorAll('.ni[data-n="home"]').forEach(function(e){e.classList.add('on');});
+}
+
+function novoPac(){_pacId=null;initFicha();preencherFicha(null);var b=G('ficha-del');if(b)b.style.display='none';showScr('s-ficha');}
+function editarPacAtivo(){if(!DB.activePacId)return;_pacId=DB.activePacId;initFicha();preencherFicha(getPac(_pacId));var b=G('ficha-del');if(b)b.style.display='';showScr('s-ficha');}
+
+function initFicha(){
+  var w=G('fp-comor');if(!w)return;
+  w.className='chk-wrap';
+  w.innerHTML=COMOR.map(function(cm){return '<label><input type="checkbox" id="fpc-'+cm.id+'">'+cm.l+'</label>';}).join('');
+}
+
+function preencherFicha(p){
+  ['nome','nasc','tel','med','meds','alergia','obs','hba1c','alb','abi','imc'].forEach(function(k){var e=G('fp-'+k);if(e)e.value=p?p[k]||'':'';});
+  var se=G('fp-status');if(se)se.value=p?p.status||'ativo':'ativo';
+  COMOR.forEach(function(cm){var e=G('fpc-'+cm.id);if(e)e.checked=p&&p.comor?p.comor.indexOf(cm.id)>=0:false;});
+  var out=G('fp-comor-out');if(out)out.value=p?p.comorOut||'':'';
+}
+
+function salvarPac(){
+  var nome=((G('fp-nome')||{}).value||'').trim();
+  if(!nome){alert('Digite o nome do paciente.');return;}
+  var comors=COMOR.filter(function(cm){var e=G('fpc-'+cm.id);return e&&e.checked;}).map(function(cm){return cm.id;});
+  var isNew=!_pacId;
+  var old=isNew?null:getPac(_pacId);
+  var p={
+    id:_pacId||('p'+Date.now()),nome:nome,
+    nasc:((G('fp-nasc')||{}).value||''),tel:((G('fp-tel')||{}).value||''),
+    med:((G('fp-med')||{}).value||''),meds:((G('fp-meds')||{}).value||''),
+    alergia:((G('fp-alergia')||{}).value||''),obs:((G('fp-obs')||{}).value||''),
+    status:((G('fp-status')||{value:'ativo'}).value||'ativo'),
+    hba1c:((G('fp-hba1c')||{}).value||''),alb:((G('fp-alb')||{}).value||''),
+    abi:((G('fp-abi')||{}).value||''),imc:((G('fp-imc')||{}).value||''),
+    comor:comors,comorOut:((G('fp-comor-out')||{}).value||''),
+    dataCadastro:old?old.dataCadastro:today()
+  };
+  if(!DB.pacientes)DB.pacientes=[];
+  if(!isNew){var idx=DB.pacientes.findIndex(function(x){return x.id===_pacId;});if(idx>=0)DB.pacientes[idx]=p;else DB.pacientes.push(p);}
+  else{DB.pacientes.push(p);DB.activePacId=p.id;UI.woundId='w'+Date.now();}
+  saveDB();
+  if(isNew&&confirm('Paciente salvo! Registrar primeira consulta agora?')){
+    initForm(-1);var wl=G('f-wlabel');if(wl)wl.value='Ferida 1';var wi=G('f-wid');if(wi)wi.value=UI.woundId;showScr('s-form');
+  } else {voltarLista();}
+}
+
+function excluirPac(){
+  if(!_pacId)return;var p=getPac(_pacId);if(!p)return;
+  if(!confirm('Excluir '+p.nome+' e todas as consultas?'))return;
+  DB.pacientes=DB.pacientes.filter(function(x){return x.id!==_pacId;});
+  DB.consultas=(DB.consultas||[]).filter(function(ct){return ct.pacId!==_pacId;});
+  if(DB.activePacId===_pacId){DB.activePacId=DB.pacientes.length?DB.pacientes[0].id:null;UI.woundId=null;}
+  saveDB();voltarLista();
+}
+
+// HP auto-preencher com dados do paciente
+function preencherHPdoPaciente(){
+  var p=typeof getActivePac==='function'?getActivePac():null;
+  if(!p)return;
+  var cam={'hp-nome':'nome','hp-nasc':'nasc','hp-tel':'tel','hp-med':'med'};
+  Object.keys(cam).forEach(function(hid){var e=G(hid);if(e&&p[cam[hid]])e.value=p[cam[hid]];});
+  var lab={'hp-hba1c':'hba1c','hp-alb':'alb','hp-abi':'abi','hp-imc':'imc'};
+  Object.keys(lab).forEach(function(hid){var e=G(hid);if(e&&p[lab[hid]])e.value=p[lab[hid]];});
+  COMOR.forEach(function(cm){var d=G('hc-'+cm.id);if(d)d.checked=p.comor?p.comor.indexOf(cm.id)>=0:false;});
+  hpProg();
+}
+
+// DOMContentLoaded
+window.addEventListener('DOMContentLoaded',function(){
+  loadDB();
+  // Migrar paciente único para multi-paciente
+  if(DB.pac&&DB.pac.nome&&(!DB.pacientes||!DB.pacientes.length)){
+    var mid='p0';DB.pacientes=[Object.assign({id:mid,status:'ativo',dataCadastro:today()},DB.pac)];
+    (DB.consultas||[]).forEach(function(ct){ct.pacId=mid;});
+    DB.activePacId=mid;DB.pac=null;saveDB();
+  }
+  setLogos();
+  // Logos das telas novas
+  ['l-lista','l-ficha'].forEach(function(lid){
+    var e=G(lid);
+    if(e){e.src='data:image/jpeg;base64,'+LOGO_B64;e.style.height='26px';e.style.objectFit='contain';}
+  });
+  initFicha();
+  initTissueSliders();
+  initComor('hp-comor','hc-','hpProg()');
+  initTIME('tf');initTIME('hp-tf');
+  initAdj();
+  var d=today();
+  ['f-data','pr-data'].forEach(function(lid){var e=G(lid);if(e)e.value=d;});
+  SEL.pdf.clear();
+  (DB.consultas||[]).forEach(function(ct,i){SEL.pdf.add(i);});
+  SEL.wppIdx=Math.max(0,(DB.consultas||[]).length-1);
+  if(DB.activePacId&&getPac(DB.activePacId)){
+    renderHome();showScr('s-home');
+    document.querySelectorAll('.ni[data-n="home"]').forEach(function(e){e.classList.add('on');});
+  } else {
+    renderLista();showScr('s-lista');
+  }
+});
+
+</script>
+</body>
+</html>
