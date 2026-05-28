@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Primorcare">
+<meta name="theme-color" content="#1a3a1a">
+<title>Primorcare</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --g:#1a3a1a;--t:#1D9E75;--tl:rgba(29,158,117,.12);
+  --a:#BA7517;--r:#A32D2D;--bg:#f4f4f1;
+  --card:#fff;--bd:#e0dfd8;--bd2:#c4c3bb;
+  --tx:#1a1a18;--t2:#666;--t3:#999;
+  --rr:10px;--rl:14px
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--tx);overscroll-behavior:none}
+.scr{display:none;height:100%;flex-direction:column;overflow:hidden}
+.scr.on{display:flex}
+.top{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--bd);min-height:52px}
+.top img{height:28px;object-fit:contain}
+.sc{flex:1;overflow-y:auto;padding:12px 16px 90px;-webkit-overflow-scrolling:touch}
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--rr);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:var(--card);color:var(--tx);font-family:inherit;touch-action:manipulation;-webkit-appearance:none}
+.btn:active{opacity:.75}
+.btn-p{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-t{background:var(--t);color:#fff;border-color:var(--t)}
+.btn-r{color:var(--r);border-color:rgba(163,45,45,.35)}
+.btn-g{background:#25D366;color:#fff;border-color:#25D366}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-w{width:100%}
+/* Cards */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:10px}
+.ct{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.05em}
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fw{grid-column:1/-1}
+/* Form */
+.fg{display:flex;flex-direction:column;gap:5px}
+.lb{font-size:12px;font-weight:600;color:var(--t2)}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--bd2);border-radius:var(--rr);
+  background:#fff;color:var(--tx);font-size:14px;font-family:inherit;
+  -webkit-appearance:none;touch-action:manipulation
+}
+input[type=date]{min-height:44px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--t);box-shadow:0 0 0 3px var(--tl)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+/* Checkboxes */
+.chk-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.chk-wrap label{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border:2px solid var(--bd2);border-radius:var(--rr);
+  background:#fff;font-size:13px;cursor:pointer;touch-action:manipulation;
+  user-select:none;-webkit-user-select:none
+}
+.chk-wrap label input[type=checkbox]{
+  width:20px;height:20px;flex-shrink:0;accent-color:var(--t);cursor:pointer
+}
+.chk-wrap label:has(input:checked){
+  border-color:var(--t);background:var(--tl);font-weight:600;color:var(--g)
+}
+/* Métrica */
+.met{background:var(--card);border:1px solid var(--bd);border-radius:var(--rr);padding:12px 14px}
+.ml{font-size:11px;color:var(--t3);margin-bottom:3px}
+.mv{font-size:20px;font-weight:700;line-height:1}
+.ms{font-size:11px;color:var(--t3);margin-top:3px}
+.mc-t{color:var(--t)}.mc-a{color:var(--a)}.mc-r{color:var(--r)}
+/* Nav */
+.bnav{flex-shrink:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;font-size:10px;font-weight:600;color:var(--t3);gap:3px;touch-action:manipulation;min-height:52px}
+.ni.on{color:var(--t)}
+.ni svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* Tabs */
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--bd);margin-bottom:14px;-webkit-overflow-scrolling:touch}
+.tab{padding:10px 14px;font-size:12px;font-weight:700;color:var(--t3);border:none;background:transparent;border-bottom:2.5px solid transparent;white-space:nowrap;cursor:pointer;font-family:inherit;touch-action:manipulation}
+.tab.on{color:var(--t);border-bottom-color:var(--t)}
+.pan{display:none}.pan.on{display:block}
+/* Sliders de tecido */
+.ts-row{margin-bottom:14px}
+.ts-hd{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ts-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.ts-nm{font-size:13px;font-weight:600;flex:1}
+.ts-pct{font-size:15px;font-weight:700;min-width:42px;text-align:right}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;outline:none;border:none;padding:0;background:#e0dfd8}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;cursor:pointer;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+/* Câmera */
+.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.ref-item{border:1.5px solid var(--bd2);border-radius:var(--rr);padding:10px 6px;text-align:center;cursor:pointer;touch-action:manipulation}
+.ref-item.on{border-color:var(--t);background:var(--tl)}
+.ref-item .ri-icon{font-size:22px;margin-bottom:3px}
+.ref-item .ri-nm{font-size:11px;font-weight:700}
+.ref-item .ri-mm{font-size:10px;color:var(--t3)}
+.cam-canvas{width:100%;display:block;touch-action:none}
+.cam-wrap{position:relative;background:#111;border-radius:var(--rr);overflow:hidden;margin-bottom:8px}
+.cam-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:11px;padding:4px 14px;border-radius:20px;white-space:nowrap;pointer-events:none}
+.mstep-btns{display:flex;gap:6px;margin:8px 0}
+.mstep-btn{flex:1;padding:8px;border-radius:var(--rr);font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:#fff;color:var(--t2);text-align:center;touch-action:manipulation}
+.mstep-btn.on{background:var(--t);color:#fff;border-color:var(--t)}
+.mres-box{border:2px solid var(--t);border-radius:var(--rl);padding:14px;background:var(--tl);margin-top:10px}
+/* Consultas */
+.cons-item{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:13px 15px;margin-bottom:8px;cursor:pointer;touch-action:manipulation}
+.cons-item:active{background:#f5f5f2}
+/* Pacientes */
+.pac-item{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:9px;cursor:pointer;display:flex;align-items:center;gap:12px;touch-action:manipulation}
+.pac-item:active{background:#f5f5f2}
+.pac-av{width:46px;height:46px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;flex-shrink:0}
+/* Misc */
+.empty{text-align:center;padding:32px 20px;color:var(--t3);font-size:13px;line-height:1.7}
+.tag{display:inline-flex;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;margin:2px}
+.tag-g{background:rgba(29,158,117,.12);color:#085041}
+.tag-a{background:rgba(186,117,23,.1);color:#854F0B}
+.tag-r{background:rgba(163,45,45,.12);color:#791F1F}
+.bar-color{height:12px;border-radius:6px;overflow:hidden;display:flex}
+.iab{background:#f5f5f2;border-radius:var(--rr);padding:13px 15px;font-size:12px;line-height:1.75;white-space:pre-wrap;word-break:break-word;font-family:monospace}
+.spin{width:20px;height:20px;border:2.5px solid var(--bd2);border-top-color:var(--t);border-radius:50%;animation:sp .7s linear infinite;display:inline-block;vertical-align:-4px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.cp-msg{display:none;font-size:12px;color:var(--t);font-weight:700;padding:4px 0}
+.chart-box{position:relative;height:200px}
+.prog-seg{border-radius:var(--rl);padding:14px;border:2px solid var(--t);background:rgba(29,158,117,.04);margin-bottom:10px}
+.prog-seg.w{border-color:var(--a);background:rgba(186,117,23,.04)}
+.prog-seg.r{border-color:var(--r);background:rgba(163,45,45,.04)}
+.alert-box{border-radius:var(--rr);padding:11px 13px;font-size:12px;line-height:1.6;margin-top:8px}
+.alert-r{background:rgba(163,45,45,.07);border:1px solid rgba(163,45,45,.25);color:#5a1a1a}
+.alert-a{background:rgba(186,117,23,.07);border:1px solid rgba(186,117,23,.25);color:#4a2e00}
+/* loading */
+#loading{position:fixed;inset:0;background:var(--g);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+#loading img{height:42px;margin-bottom:16px}
+#loading .spin2{width:32px;height:32px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+#loading p{color:rgba(255,255,255,.6);font-size:13px;margin-top:12px}
+</style>
+</head>
+<body>
+
+<div id="loading" style="position:fixed;inset:0;background:var(--g);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s">
+  <img id="load-logo" src="" alt="" style="height:40px;margin-bottom:16px;object-fit:contain">
+  <div style="width:28px;height:28px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite"></div>
+  <p style="color:rgba(255,255,255,.7);font-size:12px;margin-top:12px">Carregando...</p>
+</div>
+
+<div id="s-lista" class="scr">
+  <div class="top"><img id="l-lista" alt="" style="height:28px;object-fit:contain">
+    <button class="btn btn-p btn-sm" onclick="novoPac()">+ Novo paciente</button>
+  </div>
+  <div class="sc">
+    <div style="background:#f0f0ec;border-radius:var(--rl);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="color:#888;font-size:16px">&#128269;</span>
+      <input type="text" id="pac-busca" placeholder="Buscar paciente..." oninput="renderPacs()" style="border:none;background:transparent;outline:none;font-size:14px;flex:1;padding:0">
+    </div>
+    <div id="lista-pacs"></div>
+  </div>
+</div>
+
+<div id="s-ficha" class="scr">
+  <div class="top"><img id="l-ficha" alt="" style="height:28px;object-fit:contain">
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-r btn-sm" id="fp-del" style="display:none" onclick="excluirPac()">Excluir</button>
+      <button class="btn btn-sm" onclick="goHome()">Cancelar</button>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="card"><div class="ct">Dados do paciente</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Nome completo *</label><input type="text" id="fp-nome" placeholder="Nome do paciente"></div>
+        <div class="fg"><label class="lb">Data de nascimento</label><input type="date" id="fp-nasc"></div>
+        <div class="fg"><label class="lb">WhatsApp</label><input type="text" id="fp-tel" placeholder="(00) 00000-0000"></div>
+        <div class="fg"><label class="lb">M&#233;dico assistente</label><input type="text" id="fp-med" placeholder="Dr(a). Nome"></div>
+        <div class="fg"><label class="lb">Status</label>
+          <select id="fp-status">
+            <option value="ativo">Ativo</option>
+            <option value="alta">Alta</option>
+            <option value="pausado">Pausado</option>
+          </select>
+        </div>
+        <div class="fg fw"><label class="lb">Medica&#231;&#245;es</label><input type="text" id="fp-meds" placeholder="metformina..."></div>
+        <div class="fg fw"><label class="lb">Alergias</label><input type="text" id="fp-alergia" placeholder="l&#225;tex, iodo..."></div>
+        <div class="fg fw"><label class="lb">Observa&#231;&#245;es</label><textarea id="fp-obs" style="min-height:44px"></textarea></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Comorbidades</div><div class="chk-wrap" id="fp-comor"></div></div>
+    <div class="card"><div class="ct">Dados laboratoriais</div>
+      <div class="g2">
+        <div class="fg"><label class="lb">HbA1c %</label><input type="number" id="fp-hba1c" step="0.1" placeholder="8.2"></div>
+        <div class="fg"><label class="lb">Albumina g/dL</label><input type="number" id="fp-alb" step="0.1" placeholder="3.5"></div>
+        <div class="fg"><label class="lb">ABI</label><input type="number" id="fp-abi" step="0.01" placeholder="0.85"></div>
+        <div class="fg"><label class="lb">IMC</label><input type="number" id="fp-imc" step="0.1" placeholder="28.4"></div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-w" onclick="salvarPac()" style="margin-bottom:24px">Salvar paciente</button>
+  </div>
+</div>
+
+<div id="s-home" class="scr">
+  <div class="top"><img id="l-home" alt="" style="height:28px;object-fit:contain">
+    <span style="font-size:13px;color:#888">Primorcare</span>
+  </div>
+  <div class="sc">
+    <div class="card" id="pac-card" style="cursor:pointer;margin-bottom:12px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <button class="btn btn-p btn-w" onclick="preencherHP();showScr('s-hp')">Health Plan</button>
+      <button class="btn btn-g btn-w" onclick="novaConsulta()">+ Consulta</button>
+    </div>
+    <div class="card">
+      <div class="ct">Evolu&#231;&#227;o da ferida</div>
+      <div style="height:200px"><canvas id="mainChart"></canvas></div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="ni on" data-n="home" onclick="goHome();setNav('home')"><span>&#127968;</span><span>In&#237;cio</span></div>
+    <div class="ni" data-n="hp" onclick="preencherHP();showScr('s-hp');setNav('hp')"><span>&#128203;</span><span>Health Plan</span></div>
+    <div class="ni" data-n="rel" onclick="showScr('s-rel');setNav('rel')"><span>&#128196;</span><span>Relat&#243;rio</span></div>
+  </nav>
+</div>
+
+<div id="s-hp" class="scr">
+  <div class="top">
+    <button class="btn btn-sm" onclick="goHome()">&#8249; Voltar</button>
+    <span style="font-weight:700">Health Plan</span>
+    <button class="btn btn-p btn-sm" onclick="salvarHP()">Salvar</button>
+  </div>
+  <div class="sc">
+    <div class="card"><div class="ct">Dados do paciente</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Paciente</label><input type="text" id="hp-nome" readonly style="background:#f5f5f2"></div>
+        <div class="fg"><label class="lb">HbA1c %</label><input type="number" id="hp-hba1c" step="0.1"></div>
+        <div class="fg"><label class="lb">ABI</label><input type="number" id="hp-abi" step="0.01"></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Comorbidades</div><div class="chk-wrap" id="hp-comor"></div></div>
+    <div class="card"><div class="ct">Dados da les&#227;o</div>
+      <div class="g2">
+        <div class="fg fw"><label class="lb">Localiza&#231;&#227;o</label><input type="text" id="hp-local" placeholder="Ex: Male&#769;olo MIE"></div>
+        <div class="fg"><label class="lb">Etiologia</label>
+          <select id="hp-etio" onchange="calcHP()">
+            <option value="">Selecione...</option>
+            <option value="venosa">&#218;lcera venosa</option>
+            <option value="arterial">&#218;lcera arterial</option>
+            <option value="diabetica">&#218;lcera diab&#233;tica</option>
+            <option value="pressao">&#218;lcera por press&#227;o</option>
+            <option value="cirurgica">Ferida cir&#250;rgica</option>
+            <option value="traumatica">Ferida traum&#225;tica</option>
+            <option value="mista">Etiologia mista</option>
+          </select>
+        </div>
+        <div class="fg"><label class="lb">Tempo de les&#227;o</label>
+          <select id="hp-tempo">
+            <option value="">Selecione...</option>
+            <option value="aguda">Aguda (menos de 4 sem)</option>
+            <option value="subaguda">Subaguda (4 a 12 sem)</option>
+            <option value="cronica">Cr&#244;nica (mais de 12 sem)</option>
+            <option value="muito_cronica">Muito cr&#244;nica (mais de 1 ano)</option>
+          </select>
+        </div>
+        <div class="fg"><label class="lb">Comprimento (mm)</label>
+          <input type="number" id="hp-comp" step="0.1" placeholder="0.0"
+            oninput="var av=G('hp-area-val'),l=parseFloat((G('hp-larg')||{value:0}).value)||0,c=parseFloat(this.value)||0;if(av&&c&&l)av.value=(c*l).toFixed(1)+' mm2';">
+        </div>
+        <div class="fg"><label class="lb">Largura (mm)</label>
+          <input type="number" id="hp-larg" step="0.1" placeholder="0.0"
+            oninput="var av=G('hp-area-val'),c=parseFloat((G('hp-comp')||{value:0}).value)||0,l=parseFloat(this.value)||0;if(av&&c&&l)av.value=(c*l).toFixed(1)+' mm2';">
+        </div>
+        <div class="fg"><label class="lb">&#193;rea calculada</label><input id="hp-area-val" readonly style="background:#f5f5f2"></div>
+        <div class="fg fw"><label class="lb">Cobertura prim&#225;ria</label><input type="text" id="hp-cobp" placeholder="Alginato, hidrogel..."></div>
+        <div class="fg fw"><label class="lb">Cobertura secund&#225;ria</label><input type="text" id="hp-cobs" placeholder="Espuma, atadura..."></div>
+        <div class="fg fw"><label class="lb">Orienta&#231;&#245;es</label><textarea id="hp-orient" style="min-height:44px"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s-consulta" class="scr">
+  <div class="top">
+    <button class="btn btn-sm" onclick="goHome()">&#8249; Voltar</button>
+    <span style="font-weight:700">Nova Consulta</span>
+  </div>
+  <div class="sc">
+    <div class="card"><div class="ct">Em desenvolvimento</div>
+      <p style="color:#888;font-size:13px">Funcionalidade de consulta em breve.</p>
+    </div>
+  </div>
+</div>
+
+<div id="s-rel" class="scr">
+  <div class="top">
+    <button class="btn btn-sm" onclick="goHome()">&#8249; Voltar</button>
+    <span style="font-weight:700">Relat&#243;rio</span>
+  </div>
+  <div class="sc">
+    <div class="card"><div class="ct">Prontu&#225;rio</div>
+      <button class="btn btn-p btn-w" onclick="gerarPront()" style="margin-bottom:10px">Gerar relat&#243;rio</button>
+      <div id="pront-res" style="display:none">
+        <pre id="pront-txt" style="white-space:pre-wrap;font-size:12px;font-family:inherit;margin:0 0 10px"></pre>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="copyText(G('pront-txt').textContent);showCP('pront-cp')">Copiar</button>
+          <button class="btn btn-g btn-sm" onclick="prontWpp()">WhatsApp</button>
+          <span class="cp-msg" id="pront-cp">&#10003; Copiado!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var LOGO_B64='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';
+var DB={pacientes:[],consultas:[],activePacId:null};
+var UI={woundId:null};
+var SEL={pdf:new Set(),wppIdx:0};
+var COMOR=[
+  {id:'dm2',l:'Diabetes tipo 2'},{id:'dm1',l:'Diabetes tipo 1'},
+  {id:'has',l:'HAS'},{id:'ivc',l:'Insuf. venosa cr\u00f4nica'},
+  {id:'dai',l:'Doen\u00e7a arterial perif\u00e9rica'},{id:'ob',l:'Obesidade'},
+  {id:'irc',l:'Insuf. renal cr\u00f4nica'},{id:'des',l:'Desnutri\u00e7\u00e3o'},
+  {id:'imu',l:'Imunossupress\u00e3o'},{id:'tab',l:'Tabagismo'},
+  {id:'ane',l:'Anemia'},{id:'hip',l:'Hipotireoidismo'}
+];
+var TISSUES=[
+  {id:'gran',l:'Granula\u00e7\u00e3o',cor:'#E63946'},
+  {id:'epit',l:'Epiteliza\u00e7\u00e3o',cor:'#F4A7B9'},
+  {id:'fibr',l:'Fibrina/esfacelo',cor:'#F5C578'},
+  {id:'necr',l:'Necrose',cor:'#5C3D2E'}
+];
+var ADJS=[
+  {id:'laser',n:'Laser LLLT',boost:0.20,desc:'Fotobiomodula\u00e7\u00e3o - +20% na taxa'},
+  {id:'led',n:'LED fototerapia',boost:0.15,desc:'Angiog\u00eanese - +15% na taxa'},
+  {id:'tpnv',n:'TPNV/VAC',boost:0.30,desc:'Press\u00e3o negativa - +30% na taxa'},
+  {id:'prf',n:'PRF - Plasma Rico em Fibrina',boost:0.35,prf:true,desc:'Primorcare - +35% na taxa individual'},
+  {id:'us',n:'Ultrassom terap\u00eautico',boost:0.20,desc:'+20% na taxa'},
+  {id:'oz',n:'Ozonioterapia',boost:0.12,desc:'+12% na taxa'}
+];
+var HP={adjs:new Set(),rate:0,plan:null,refs:[]};
+
+function G(id){return document.getElementById(id);}
+function today(){return new Date().toISOString().split('T')[0];}
+function uid(){return Math.random().toString(36).substr(2,9);}
+function fmtD(d){if(!d)return'';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function fmtR(v){return 'R$ '+(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});}
+function el(tag,css,html){var e=document.createElement(tag);if(css)e.style.cssText=css;if(html)e.innerHTML=html;return e;}
+function makeEl(tag,attrs,text){
+  var e=document.createElement(tag);
+  if(attrs)Object.keys(attrs).forEach(function(k){if(k==='style')e.style.cssText=attrs[k];else e.setAttribute(k,attrs[k]);});
+  if(text)e.textContent=text;
+  return e;
+}
+
+function loadDB(){
+  try{var s=localStorage.getItem('pcDB2');if(s){var d=JSON.parse(s);DB=d;}}catch(e){}
+  if(!DB.pacientes)DB.pacientes=[];
+  if(!DB.consultas)DB.consultas=[];
+}
+function saveDB(){try{localStorage.setItem('pcDB2',JSON.stringify(DB));}catch(e){alert('Erro ao salvar: '+e.message);}}
+
+function showScr(id){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  var e=G(id);if(e)e.classList.add('on');
+  window.scrollTo(0,0);
+}
+function setNav(n){
+  document.querySelectorAll('.ni').forEach(function(e){e.classList.remove('on');});
+  document.querySelectorAll('.ni[data-n="'+n+'"]').forEach(function(e){e.classList.add('on');});
+}
+function setLogos(){
+  ['l-home','l-lista','l-ficha','load-logo'].forEach(function(id){
+    var e=G(id);if(e){e.src='data:image/jpeg;base64,'+LOGO_B64;e.style.height='30px';e.style.objectFit='contain';}
+  });
+}
+function getPac(id){return(DB.pacientes||[]).find(function(p){return p.id===id;});}
+function getActivePac(){return getPac(DB.activePacId);}
+function goHome(){renderHome();showScr('s-home');setNav('home');}
+
+// ===== PACIENTES =====
+function initComor(wrapId,prefix,onchange){
+  var w=G(wrapId);if(!w)return;
+  w.className='chk-wrap';
+  w.innerHTML='';
+  COMOR.forEach(function(c){
+    var lbl=document.createElement('label');
+    var inp=document.createElement('input');
+    inp.type='checkbox';inp.id=prefix+c.id;
+    if(onchange)inp.setAttribute('onchange',onchange);
+    lbl.appendChild(inp);
+    lbl.appendChild(document.createTextNode(c.l));
+    w.appendChild(lbl);
+  });
+}
+
+function renderPacs(){
+  var el=G('lista-pacs');if(!el)return;
+  var busca=(G('pac-busca')||{value:''}).value.toLowerCase();
+  var pacs=(DB.pacientes||[]).filter(function(p){return!busca||p.nome.toLowerCase().indexOf(busca)>=0;});
+  el.innerHTML='';
+  if(!pacs.length){
+    var d=document.createElement('div');
+    d.style.cssText='text-align:center;padding:40px;color:#888';
+    d.textContent='Nenhum paciente. Toque em + Novo.';
+    el.appendChild(d);return;
+  }
+  pacs.forEach(function(p){
+    var card=document.createElement('div');
+    card.className='card';card.style.cssText='cursor:pointer;margin-bottom:8px';
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px';
+    var av=document.createElement('div');
+    av.style.cssText='width:40px;height:40px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0';
+    av.textContent=p.nome[0].toUpperCase();
+    var info=document.createElement('div');info.style.flex='1';
+    var nm=document.createElement('div');nm.style.fontWeight='700';nm.textContent=p.nome;
+    var sub=document.createElement('div');sub.style.cssText='font-size:12px;color:#888';
+    var age=p.nasc?Math.floor((new Date()-new Date(p.nasc))/31557600000)+'a':'';
+    sub.textContent=(age?age+' · ':'')+( p.status||'ativo');
+    var arr=document.createElement('span');arr.style.cssText='color:#888;font-size:20px';arr.textContent='›';
+    info.appendChild(nm);info.appendChild(sub);
+    row.appendChild(av);row.appendChild(info);row.appendChild(arr);
+    card.appendChild(row);
+    (function(pid){card.onclick=function(){selPac(pid);};})(p.id);
+    el.appendChild(card);
+  });
+}
+
+function selPac(id){DB.activePacId=id;UI.woundId=null;saveDB();renderHome();showScr('s-home');setNav('home');}
+
+function novoPac(){
+  DB.activePacId=null;
+  ['fp-nome','fp-nasc','fp-tel','fp-med','fp-meds','fp-alergia','fp-obs','fp-hba1c','fp-alb','fp-abi','fp-imc'].forEach(function(id){var e=G(id);if(e)e.value='';});
+  var del=G('fp-del');if(del)del.style.display='none';
+  var fs=G('fp-status');if(fs)fs.value='ativo';
+  COMOR.forEach(function(c){var e=G('fpc-'+c.id);if(e)e.checked=false;});
+  showScr('s-ficha');
+}
+
+function editPac(){
+  var p=getActivePac();if(!p)return;
+  var f={nome:'fp-nome',nasc:'fp-nasc',tel:'fp-tel',med:'fp-med',meds:'fp-meds',alergia:'fp-alergia',obs:'fp-obs',hba1c:'fp-hba1c',alb:'fp-alb',abi:'fp-abi',imc:'fp-imc'};
+  Object.keys(f).forEach(function(k){var e=G(f[k]);if(e&&p[k])e.value=p[k];});
+  var fs=G('fp-status');if(fs)fs.value=p.status||'ativo';
+  var del=G('fp-del');if(del)del.style.display='block';
+  COMOR.forEach(function(c){var e=G('fpc-'+c.id);if(e)e.checked=p.comor?p.comor.indexOf(c.id)>=0:false;});
+  showScr('s-ficha');
+}
+
+function salvarPac(){
+  var nome=(G('fp-nome')||{value:''}).value.trim();
+  if(!nome){alert('Digite o nome do paciente.');return;}
+  var comor=COMOR.filter(function(c){var e=G('fpc-'+c.id);return e&&e.checked;}).map(function(c){return c.id;});
+  var p={id:DB.activePacId||uid(),nome:nome,
+    nasc:(G('fp-nasc')||{value:''}).value,tel:(G('fp-tel')||{value:''}).value,
+    med:(G('fp-med')||{value:''}).value,meds:(G('fp-meds')||{value:''}).value,
+    alergia:(G('fp-alergia')||{value:''}).value,obs:(G('fp-obs')||{value:''}).value,
+    status:(G('fp-status')||{value:'ativo'}).value,
+    hba1c:(G('fp-hba1c')||{value:''}).value,alb:(G('fp-alb')||{value:''}).value,
+    abi:(G('fp-abi')||{value:''}).value,imc:(G('fp-imc')||{value:''}).value,
+    comor:comor,dataCad:today()};
+  var idx=DB.pacientes.findIndex(function(x){return x.id===p.id;});
+  if(idx>=0)DB.pacientes[idx]=p;else DB.pacientes.push(p);
+  DB.activePacId=p.id;saveDB();goHome();
+}
+
+function excluirPac(){
+  if(!confirm('Excluir este paciente e todas as consultas?'))return;
+  var id=DB.activePacId;
+  DB.pacientes=DB.pacientes.filter(function(p){return p.id!==id;});
+  DB.consultas=DB.consultas.filter(function(c){return c.pacId!==id;});
+  DB.activePacId=null;saveDB();renderPacs();showScr('s-lista');
+}
+
+// ===== HOME =====
+function renderHome(){
+  var p=getActivePac();
+  var card=G('pac-card');
+  if(!card)return;
+  card.innerHTML='';
+  if(!p){
+    var d=document.createElement('div');
+    d.style.cssText='text-align:center;padding:10px;color:#888;cursor:pointer';
+    d.textContent='Selecionar paciente \u203a';
+    d.onclick=function(){renderPacs();showScr('s-lista');};
+    card.appendChild(d);
+  } else {
+    var age=p.nasc?Math.floor((new Date()-new Date(p.nasc))/31557600000)+'a':'';
+    var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:10px';
+    var av=document.createElement('div');
+    av.style.cssText='width:42px;height:42px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0';
+    av.textContent=p.nome[0].toUpperCase();
+    var info=document.createElement('div');info.style.flex='1';
+    var nm=document.createElement('div');nm.style.fontWeight='700';nm.textContent=p.nome;
+    var sub=document.createElement('div');sub.style.cssText='font-size:12px;color:var(--g)';
+    sub.textContent='Ativo'+(age?' \u00b7 '+age:'');
+    var btns=document.createElement('div');btns.style.cssText='display:flex;gap:5px';
+    var be=document.createElement('button');be.className='btn btn-sm';be.textContent='Editar';
+    be.onclick=function(e){e.stopPropagation();editPac();};
+    var bt=document.createElement('button');bt.className='btn btn-sm';bt.textContent='Trocar';
+    bt.onclick=function(e){e.stopPropagation();renderPacs();showScr('s-lista');};
+    btns.appendChild(be);btns.appendChild(bt);
+    info.appendChild(nm);info.appendChild(sub);
+    row.appendChild(av);row.appendChild(info);row.appendChild(btns);
+    card.appendChild(row);
+    card.style.cursor='pointer';
+    card.onclick=function(){editPac();};
+  }
+  // Consultas no gráfico
+  renderChart();
+}
+
+function getCS(){
+  var pid=DB.activePacId;var wid=UI.woundId;
+  return(DB.consultas||[]).filter(function(c){return c.pacId===pid&&c.wid===wid;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+}
+
+function renderChart(){
+  var cv=G('mainChart');if(!cv)return;
+  if(window._chartMain){window._chartMain.destroy();window._chartMain=null;}
+  var cs=getCS();
+  if(!cs.length){
+    var ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);
+    return;
+  }
+  window._chartMain=new Chart(cv,{type:'line',data:{
+    labels:cs.map(function(c){return fmtD(c.data)+(c.hp?' (HP)':'');}),
+    datasets:[{label:'Área (mm²)',data:cs.map(function(c){return c.area;}),
+      borderColor:'#1a3a1a',backgroundColor:'rgba(29,158,117,.1)',
+      borderWidth:2.5,pointRadius:4,tension:0.3,fill:true}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{y:{ticks:{callback:function(v){return v+' mm²';}}}}
+  }});
+}
+
+// ===== HEALTH PLAN =====
+function preencherHP(){
+  var p=getActivePac();if(!p)return;
+  var e=G('hp-nome');if(e)e.value=p.nome;
+  // Labs do cadastro
+  ['hba1c','alb','abi','imc'].forEach(function(k){var e=G('hp-'+k);if(e&&p[k])e.value=p[k];});
+  // Comorbidades do cadastro
+  COMOR.forEach(function(c){var e=G('hc-'+c.id);if(e)e.checked=p.comor?p.comor.indexOf(c.id)>=0:false;});
+  // Restaurar HP salvo
+  var todasCs=(DB.consultas||[]).filter(function(x){return x.pacId===DB.activePacId;});
+  var hpSalvo=todasCs.find(function(x){return x.hp;});
+  if(hpSalvo&&hpSalvo.hp){
+    var h=hpSalvo.hp;
+    if(!UI.woundId)UI.woundId=hpSalvo.wid;
+    ['etio','tempo','local','cobp','cobs','orient'].forEach(function(k){var e=G('hp-'+k);if(e&&h[k])e.value=h[k];});
+    if(h.comp){var ec=G('hp-comp');if(ec)ec.value=h.comp;}
+    if(h.larg){var el=G('hp-larg');if(el)el.value=h.larg;}
+    if(h.comp&&h.larg){var av=G('hp-area-val');if(av)av.value=(h.comp*h.larg).toFixed(1)+' mm\u00b2';}
+    ['hba1c','alb','abi','imc'].forEach(function(k){var e=G('hp-'+k);if(e&&h[k])e.value=h[k];});
+    if(h.comors)COMOR.forEach(function(c){var e=G('hc-'+c.id);if(e)e.checked=h.comors.indexOf(c.id)>=0;});
+  }
+}
+
+function salvarHP(){
+  if(!UI.woundId)UI.woundId='w'+uid();
+  var comp=parseFloat((G('hp-comp')||{value:'0'}).value)||0;
+  var larg=parseFloat((G('hp-larg')||{value:'0'}).value)||0;
+  var local=(G('hp-local')||{value:'Ferida'}).value||'Ferida';
+  var comors=COMOR.filter(function(c){var e=G('hc-'+c.id);return e&&e.checked;}).map(function(c){return c.id;});
+  var hpData={etio:(G('hp-etio')||{value:''}).value,tempo:(G('hp-tempo')||{value:''}).value,
+    local:local,cobp:(G('hp-cobp')||{value:''}).value,cobs:(G('hp-cobs')||{value:''}).value,
+    orient:(G('hp-orient')||{value:''}).value,comp:comp,larg:larg,
+    hba1c:(G('hp-hba1c')||{value:''}).value,abi:(G('hp-abi')||{value:''}).value,comors:comors};
+  var todasCs=(DB.consultas||[]).filter(function(x){return x.pacId===DB.activePacId;});
+  var hpCons=todasCs.find(function(x){return x.hp;});
+  var obj={id:hpCons?hpCons.id:uid(),pacId:DB.activePacId,wid:UI.woundId,wlabel:local,
+    data:today(),comp:comp,larg:larg,prof:0,area:parseFloat((comp*larg).toFixed(2)),
+    vol:0,valor:0,pagto:'particular',hp:hpData,aspecto:'',evol:'Health Plan',
+    timeA:{},tissue:null,insumos:[],totalIns:0,fotos:[]};
+  if(hpCons){var i=DB.consultas.findIndex(function(x){return x.id===hpCons.id;});if(i>=0)DB.consultas[i]=obj;else DB.consultas.push(obj);}
+  else DB.consultas.push(obj);
+  saveDB();alert('Health Plan salvo!');goHome();
+}
+
+// ===== RELATÓRIO =====
+function gerarPront(){
+  var p=getActivePac();if(!p){alert('Selecione um paciente.');return;}
+  var todas=(DB.consultas||[]).filter(function(x){return x.pacId===DB.activePacId;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+  var hpC=todas.find(function(x){return x.hp;});
+  var hp=hpC&&hpC.hp?hpC.hp:null;
+  var L=['RELAT\u00d3RIO CL\u00cdNICO - ESTOMATERAPIA','Data: '+fmtD(today()),'Paciente: '+p.nome,''];
+  if(hp){
+    L.push('LES\u00c3O: '+(hp.local||''));
+    if(hp.etio)L.push('Etiologia: '+hp.etio);
+    if(hp.tempo)L.push('Tempo: '+hp.tempo);
+    if(hp.comp&&hp.larg)L.push('Medidas: '+hp.comp+' x '+hp.larg+' mm | \u00c1rea: '+(hp.comp*hp.larg).toFixed(0)+' mm\u00b2');
+    if(hp.cobp)L.push('Cobertura prim\u00e1ria: '+hp.cobp);
+    if(hp.cobs)L.push('Cobertura secund\u00e1ria: '+hp.cobs);
+    if(hp.orient)L.push('Orienta\u00e7\u00f5es: '+hp.orient);
+  }
+  L.push('');L.push('Primorcare - Excel\u00eancia em Cuidado');
+  var txt=G('pront-txt');if(txt)txt.textContent=L.join('\n');
+  var res=G('pront-res');if(res)res.style.display='block';
+}
+
+function prontWpp(){
+  var el=G('pront-txt');if(!el||!el.textContent)return;
+  window.open('https://wa.me/?text='+encodeURIComponent(el.textContent),'_blank');
+}
+
+// ===== STUBS =====
+function calcHP(){}
+function hpProg(){}
+function novaConsulta(){showScr('s-consulta');}
+function copyText(t){try{navigator.clipboard.writeText(t);}catch(e){}}
+function showCP(id){var e=G(id);if(e){e.style.display='block';setTimeout(function(){e.style.display='none';},2000);}}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded',function(){
+  loadDB();
+  setLogos();
+  initComor('fp-comor','fpc-');
+  initComor('hp-comor','hc-');
+  if(DB.activePacId&&getPac(DB.activePacId)){
+    renderHome();showScr('s-home');setNav('home');
+  } else {
+    renderPacs();showScr('s-lista');
+  }
+  var ld=G('loading');
+  if(ld){
+    setTimeout(function(){
+      ld.style.opacity='0';
+      setTimeout(function(){ld.style.display='none';},400);
+    },300);
+  }
+});
+
+</script>
+</body>
+</html>
